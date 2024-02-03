@@ -48,7 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      appBar: CustomAppBar(),
+      appBar: CustomAppBar(
+        title: "Home Page",
+      ),
       drawer: SideMenu(),
       body: Center(
         child: Column(
