@@ -17,8 +17,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromRGBO(16, 19, 37, 1),
-            background: const Color.fromRGBO(16, 19, 37, 1),
+          seedColor: const Color.fromRGBO(16, 19, 37, 1),
+          background: const Color.fromRGBO(16, 19, 37, 1),
         ),
         useMaterial3: true,
       ),
@@ -48,7 +48,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      appBar: CustomAppBar(),
+      appBar: CustomAppBar(
+        title: "Home Page",
+      ),
       drawer: SideMenu(),
       body: Center(
         child: Column(

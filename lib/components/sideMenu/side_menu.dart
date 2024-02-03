@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../pages/addAccount.dart';
+
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
 
@@ -28,11 +30,13 @@ class SideMenu extends StatelessWidget {
             endIndent: 10,
           ),
           ListTile(
-            title: const Text('Item 1',
+            title: const Text('Accounts',
                 style: TextStyle(color: Colors.white, fontSize: 25)),
             hoverColor: Colors.white,
             onTap: () {
-              // Handle item 1 tap
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => AccountsPage(),
+              ));
             },
           ),
           const Divider(
@@ -45,9 +49,7 @@ class SideMenu extends StatelessWidget {
             title: const Text('Item 2',
                 style: TextStyle(color: Colors.white, fontSize: 25)),
             hoverColor: Colors.white,
-            onTap: () {
-              // Handle item 2 tap
-            },
+            onTap: () {},
           ),
         ],
       ),
