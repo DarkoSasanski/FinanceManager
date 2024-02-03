@@ -22,29 +22,92 @@ class SideMenu extends StatelessWidget {
             },
           ),
           const Divider(
-            color: Colors.white,
+            color: Colors.grey,
             thickness: 0.5,
             indent: 10,
             endIndent: 10,
           ),
           ListTile(
-            title: const Text('Item 1',
-                style: TextStyle(color: Colors.white, fontSize: 25)),
-            hoverColor: Colors.white,
+            title: const Text('Accounts',
+                style: TextStyle(color: Colors.grey, fontSize: 25)),
             onTap: () {
               // Handle item 1 tap
             },
           ),
           const Divider(
-            color: Colors.white,
+            color: Colors.grey,
             thickness: 0.5,
             indent: 10,
             endIndent: 10,
           ),
           ListTile(
-            title: const Text('Item 2',
-                style: TextStyle(color: Colors.white, fontSize: 25)),
-            hoverColor: Colors.white,
+            title: const Text('Saving plans',
+                style: TextStyle(color: Colors.grey, fontSize: 25)),
+            onTap: () {
+              // Handle item 2 tap
+            },
+          ),
+          const Divider(
+            color: Colors.grey,
+            thickness: 0.5,
+            indent: 10,
+            endIndent: 10,
+          ),
+          ListTile(
+            title: const Text('Statistics',
+                style: TextStyle(color: Colors.grey, fontSize: 25)),
+            onTap: () {
+              // Handle item 2 tap
+            },
+          ),
+          const Divider(
+            color: Colors.grey,
+            thickness: 0.5,
+            indent: 10,
+            endIndent: 10,
+          ),
+          ListTile(
+            title: const Text('Categories',
+                style: TextStyle(color: Colors.grey, fontSize: 25)),
+            onTap: () {
+              // Handle item 2 tap
+            },
+          ),
+          const Divider(
+            color: Colors.grey,
+            thickness: 0.5,
+            indent: 10,
+            endIndent: 10,
+          ),
+          ListTile(
+            title: const Text('Currencies',
+                style: TextStyle(color: Colors.grey, fontSize: 25)),
+            onTap: () {
+              // Handle item 2 tap
+            },
+          ),
+          const Divider(
+            color: Colors.grey,
+            thickness: 0.5,
+            indent: 10,
+            endIndent: 10,
+          ),
+          ListTile(
+            title: const Text('Reminders',
+                style: TextStyle(color: Colors.grey, fontSize: 25)),
+            onTap: () {
+              // Handle item 2 tap
+            },
+          ),
+          const Divider(
+            color: Colors.grey,
+            thickness: 0.5,
+            indent: 10,
+            endIndent: 10,
+          ),
+          ListTile(
+            title: const Text('Incomes',
+                style: TextStyle(color: Colors.grey, fontSize: 25)),
             onTap: () {
               // Handle item 2 tap
             },
