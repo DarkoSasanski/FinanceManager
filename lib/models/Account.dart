@@ -5,9 +5,26 @@ import 'Plan.dart';
 class Account {
   String name;
   int amount;
-  List<Plan> plans;
-  List<Income> incomes;
-  List<Expense> expenses;
+  List<Plan>? plans;
+  List<Income>? incomes;
+  List<Expense>? expenses;
 
-  Account({required this.name, required this.amount, required this.plans, required this.incomes, required this.expenses});
+  Account(
+      {required this.name,
+      required this.amount,
+      this.plans,
+      this.expenses,
+      this.incomes});
+
+  addPlan(Plan plan) {
+    plans?.add(plan);
+  }
+
+  addIncome(Income income) {
+    incomes?.add(income);
+  }
+
+  addExpense(Expense expense) {
+    expenses?.add(expense);
+  }
 }
