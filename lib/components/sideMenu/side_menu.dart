@@ -1,6 +1,6 @@
+import 'package:financemanager/pages/addAccount.dart';
+import 'package:financemanager/pages/dashboard.dart';
 import 'package:flutter/material.dart';
-
-import '../../pages/addAccount.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
@@ -30,12 +30,21 @@ class SideMenu extends StatelessWidget {
             endIndent: 10,
           ),
           ListTile(
+            title: const Text('Dashboard',
+                style: TextStyle(color: Colors.grey, fontSize: 25)),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const Dashboard(),
+              ));
+            },
+          ),
+          ListTile(
             title: const Text('Accounts',
                 style: TextStyle(color: Colors.grey, fontSize: 25)),
             hoverColor: Colors.white,
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => AccountsPage(),
+                builder: (context) => const AccountsPage(),
               ));
             },
           ),
