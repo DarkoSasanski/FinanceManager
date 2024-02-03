@@ -6,8 +6,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      backgroundColor: const Color.fromRGBO(16, 19, 37, 1),
       leading: IconButton(
-        icon: const Icon(Icons.notes),
+        icon: const Icon(Icons.notes, color: Color.fromRGBO(159, 162, 169, 1)),
         onPressed: () {
           Scaffold.of(context).openDrawer();
         },
