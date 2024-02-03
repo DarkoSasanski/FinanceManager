@@ -32,8 +32,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 padding: const EdgeInsets.only(right: 8.0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.transparent,
-                    onPrimary: Colors.black,
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.transparent,
                     shape: const StadiumBorder(),
                     padding: EdgeInsets.zero,
                     elevation: 0,
