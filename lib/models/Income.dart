@@ -7,7 +7,7 @@ class Income {
   int amount;
   DateTime date;
   Account account;
-  Category category;
+  bool isReceived;
 
   Income(
       {required this.source,
@@ -15,5 +15,5 @@ class Income {
       required this.amount,
       required this.date,
       required this.account,
-      required this.category});
+      required this.isReceived});
 }
