@@ -39,6 +39,12 @@ class SideMenu extends StatelessWidget {
               ));
             },
           ),
+          const Divider(
+            color: Colors.grey,
+            thickness: 0.5,
+            indent: 10,
+            endIndent: 10,
+          ),
           ListTile(
             title: const Text('Accounts',
                 style: TextStyle(color: Colors.grey, fontSize: 25)),
