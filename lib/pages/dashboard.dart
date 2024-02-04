@@ -1,10 +1,11 @@
 import 'package:financemanager/components/appBar/custom_app_bar.dart';
 import 'package:financemanager/components/buttons/custom_action_button.dart';
-import 'package:financemanager/components/dashboard/dashboard_pie_chart.dart';
+import 'package:financemanager/components/dashboard/dashboard_pie_chart_slider.dart';
 import 'package:flutter/material.dart';
 
 import '../components/sideMenu/side_menu.dart';
 import '../models/Category.dart';
+import '../models/Month.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -14,6 +15,8 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  int _selectedMonth = 1;
+
   List<Category> categories = [
     Category(
         name: 'Food',
@@ -65,6 +68,13 @@ class _DashboardState extends State<Dashboard> {
         color: const Color.fromRGBO(90, 50, 127, 1)),
   ];
 
+  void updateSelectedMonth(int? index) {
+    if (index == null) return;
+    setState(() {
+      _selectedMonth = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -76,7 +86,7 @@ class _DashboardState extends State<Dashboard> {
             actionButtonOnPressed: () {}),
         drawer: const SideMenu(),
         body: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(13),
           child: ListView(
             children: <Widget>[
               Row(
@@ -106,23 +116,16 @@ class _DashboardState extends State<Dashboard> {
                             fontWeight: FontWeight.normal)),
                   ),
                   DropdownButton(
+                    value: _selectedMonth,
                     icon: const Icon(Icons.keyboard_arrow_down),
                     underline: Container(),
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'all',
-                        child: Text('All accounts'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'card',
-                        child: Text('Payment card'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'cash',
-                        child: Text('Cash'),
-                      ),
-                    ],
-                    onChanged: (value) {},
+                    items: months
+                        .map((month) => DropdownMenuItem(
+                              value: month.value,
+                              child: Text(month.name),
+                            ))
+                        .toList(),
+                    onChanged: (value) => updateSelectedMonth(value),
                     hint: const Text('Month',
                         style: TextStyle(
                             color: Colors.white,
@@ -144,40 +147,39 @@ class _DashboardState extends State<Dashboard> {
                 endIndent: screenWidth * 0.4,
                 color: Colors.grey,
               ),
-              const DashboardPieChart(
-                month: 'October',
+              DashboardPieChartSlider(
+                selectedMonth: _selectedMonth,
+                onMonthChanged: updateSelectedMonth,
               ),
-              Container(
-                  margin: const EdgeInsets.only(top: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  CustomActionButton(
+                      actionButtonText: "Add Cost",
+                      actionButtonOnPressed: () {},
+                      gradientColors: const [
+                        Color(0xff544484),
+                        Color(0xff3e3262),
+                        Color(0xff2f2546),
+                      ]),
+                  const Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
-                      CustomActionButton(
-                          actionButtonText: "Add Cost",
-                          actionButtonOnPressed: () {},
-                          gradientColors: const [
-                            Color(0xff544484),
-                            Color(0xff3e3262),
-                            Color(0xff2f2546),
-                          ]),
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Text("Spendings",
-                              style: TextStyle(
-                                  fontSize: 30,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500)),
-                          Text("500\$",
-                              style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
-                              )),
-                        ],
-                      ),
+                      Text("Spendings",
+                          style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500)),
+                      Text("500\$",
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                          )),
                     ],
-                  )),
+                  ),
+                ],
+              ),
               Container(
                   padding: EdgeInsets.only(left: screenWidth * 0.4),
                   child: const Divider(
@@ -213,6 +215,7 @@ class _DashboardState extends State<Dashboard> {
                               fontSize: 12,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Text(

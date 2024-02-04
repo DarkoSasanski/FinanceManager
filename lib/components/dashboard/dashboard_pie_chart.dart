@@ -9,12 +9,12 @@ class DashboardPieChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double radius = screenWidth / 3;
+    double radius = screenWidth / 3.35;
 
     return Column(
       children: [
         Container(
-          margin: const EdgeInsets.only(top: 10, bottom: 10),
+          margin: const EdgeInsets.only(top: 10, bottom: 15),
           child: Center(
             child: Text(month,
                 style: const TextStyle(
@@ -33,7 +33,7 @@ class DashboardPieChart extends StatelessWidget {
                     BoxShadow(
                       color: Color.fromRGBO(40, 43, 107, 0.8),
                       spreadRadius: 1,
-                      blurRadius: 12,
+                      blurRadius: 9,
                     ),
                   ],
                 ),
