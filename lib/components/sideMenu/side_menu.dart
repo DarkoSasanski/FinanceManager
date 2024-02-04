@@ -86,9 +86,9 @@ class SideMenu extends StatelessWidget {
                 style: TextStyle(color: Colors.grey, fontSize: 25)),
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const CategoriesPage(),
+                builder: (context) => const CategoriesPage(),
               ));
-              },
+            },
           ),
           const Divider(
             color: Colors.grey,

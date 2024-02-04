@@ -16,11 +16,17 @@ class _CategoriesPageState extends State<CategoriesPage> {
   List<Category> categories = [];
   Color currentColor = Colors.blue;
   IconData currentIcon = Icons.home;
-  List<IconData> availableIcons = [Icons.home, Icons.car_rental, Icons.fastfood, Icons.shopping_bag];
+  List<IconData> availableIcons = [
+    Icons.home,
+    Icons.car_rental,
+    Icons.fastfood,
+    Icons.shopping_bag
+  ];
 
   void _addCategory(String name) {
     setState(() {
-      categories.add(Category(name: name, color: currentColor, icon: currentIcon));
+      categories
+          .add(Category(name: name, color: currentColor, icon: currentIcon));
     });
   }
 
@@ -59,7 +65,8 @@ class _CategoriesPageState extends State<CategoriesPage> {
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: const Color.fromRGBO(29, 31, 52, 1),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: StatefulBuilder(
@@ -85,7 +92,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey[350]!),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.tealAccent),
                         ),
                       ),
@@ -101,8 +108,10 @@ class _CategoriesPageState extends State<CategoriesPage> {
                       ),
                       dropdownColor: const Color.fromRGBO(29, 31, 52, 1),
                       value: currentIcon,
-                      icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
-                      items: availableIcons.map<DropdownMenuItem<IconData>>((IconData value) {
+                      icon:
+                          const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                      items: availableIcons
+                          .map<DropdownMenuItem<IconData>>((IconData value) {
                         return DropdownMenuItem<IconData>(
                           value: value,
                           child: Row(
@@ -157,15 +166,15 @@ class _CategoriesPageState extends State<CategoriesPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TextButton(
-                          child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+                          child: const Text('Cancel',
+                              style: TextStyle(color: Colors.white)),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
                         ),
                         ElevatedButton(
-                          child: const Text('Add', style: TextStyle(color: Colors.white)),
                           style: ElevatedButton.styleFrom(
-                            primary: currentColor,
+                            backgroundColor: currentColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -176,6 +185,8 @@ class _CategoriesPageState extends State<CategoriesPage> {
                               Navigator.of(context).pop();
                             }
                           },
+                          child: const Text('Add',
+                              style: TextStyle(color: Colors.white)),
                         ),
                       ],
                     ),
@@ -189,8 +200,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
     );
   }
 
-
-        @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
@@ -210,8 +220,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
         itemBuilder: (context, index) {
           final category = categories[index];
           return GestureDetector(
-            onTap: () {
-            },
+            onTap: () {},
             child: Container(
               decoration: BoxDecoration(
                 color: category.color,
@@ -238,5 +247,3 @@ class _CategoriesPageState extends State<CategoriesPage> {
     );
   }
 }
-
-void main() => runApp(MaterialApp(home: CategoriesPage()));
