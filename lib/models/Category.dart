@@ -8,7 +8,11 @@ class Category {
   IconData icon;
   List<Expense>? expenses;
 
-  Category({required this.name, required this.color, required this.icon, this.expenses});
+  Category(
+      {required this.name,
+      required this.color,
+      required this.icon,
+      this.expenses});
 
   addExpense(Expense expense) {
     expenses?.add(expense);

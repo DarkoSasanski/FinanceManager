@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../components/appBar/custom_app_bar.dart';
 import '../components/sideMenu/side_menu.dart';
 import '../models/Account.dart';
@@ -63,7 +64,7 @@ class _IncomesPageState extends State<IncomesPage> {
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey[350]!),
                           ),
-                          focusedBorder: UnderlineInputBorder(
+                          focusedBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.tealAccent),
                           ),
                         ),
@@ -78,7 +79,7 @@ class _IncomesPageState extends State<IncomesPage> {
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey[350]!),
                           ),
-                          focusedBorder: UnderlineInputBorder(
+                          focusedBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.tealAccent),
                           ),
                         ),
@@ -93,7 +94,7 @@ class _IncomesPageState extends State<IncomesPage> {
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey[350]!),
                           ),
-                          focusedBorder: UnderlineInputBorder(
+                          focusedBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.tealAccent),
                           ),
                         ),
@@ -104,7 +105,7 @@ class _IncomesPageState extends State<IncomesPage> {
                       ),
                       const SizedBox(height: 20),
                       ListTile(
-                        title: Text('Is Received?',
+                        title: const Text('Is Received?',
                             style: TextStyle(color: Colors.white)),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -118,7 +119,8 @@ class _IncomesPageState extends State<IncomesPage> {
                                 });
                               },
                             ),
-                            Text('Yes', style: TextStyle(color: Colors.white)),
+                            const Text('Yes',
+                                style: TextStyle(color: Colors.white)),
                             Radio<bool>(
                               value: false,
                               groupValue: isReceived,
@@ -128,7 +130,8 @@ class _IncomesPageState extends State<IncomesPage> {
                                 });
                               },
                             ),
-                            Text('No', style: TextStyle(color: Colors.white)),
+                            const Text('No',
+                                style: TextStyle(color: Colors.white)),
                           ],
                         ),
                       ),
@@ -151,7 +154,7 @@ class _IncomesPageState extends State<IncomesPage> {
                             value: account,
                             child: Text(
                               account.name,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                               ),
@@ -166,13 +169,13 @@ class _IncomesPageState extends State<IncomesPage> {
                       ),
                       const SizedBox(height: 20),
                       ListTile(
-                        title:
-                            Text('Date', style: TextStyle(color: Colors.white)),
+                        title: const Text('Date',
+                            style: TextStyle(color: Colors.white)),
                         trailing: GestureDetector(
                           onTap: () => _selectDate(context),
                           child: Text(
                             '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 16,
                               color: Colors.white,
                             ),
@@ -191,10 +194,8 @@ class _IncomesPageState extends State<IncomesPage> {
                             },
                           ),
                           ElevatedButton(
-                            child: const Text('Add',
-                                style: TextStyle(color: Colors.white)),
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.tealAccent,
+                              backgroundColor: Colors.tealAccent,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
@@ -206,6 +207,8 @@ class _IncomesPageState extends State<IncomesPage> {
                                 Navigator.of(context).pop();
                               }
                             },
+                            child: const Text('Add',
+                                style: TextStyle(color: Colors.white)),
                           ),
                         ],
                       ),
@@ -278,47 +281,43 @@ class _IncomesPageState extends State<IncomesPage> {
                 children: <Widget>[
                   Text(
                     income.source.toUpperCase(),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     'Date: ${income.date.day}/${income.date.month}/${income.date.year}',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors
-                          .grey[300],
+                      color: Colors.grey[300],
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Row(
                     children: [
                       Text(
                         '\$${income.amount}',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       if (income.isReceived)
-                        Icon(Icons.check, color: Colors.white)
+                        const Icon(Icons.check, color: Colors.white)
                     ],
                   ),
                   if (!income.isReceived)
                     Align(
                       alignment: Alignment.centerRight,
                       child: OutlinedButton(
-                        child: Text(
-                          'Mark as Received',
-                          style: TextStyle(color: Colors.white),
-                        ),
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.white, width: 1.0),
+                          side:
+                              const BorderSide(color: Colors.white, width: 1.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -329,6 +328,10 @@ class _IncomesPageState extends State<IncomesPage> {
                             income.account.addIncome(income);
                           });
                         },
+                        child: const Text(
+                          'Mark as Received',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                 ],
@@ -341,4 +344,4 @@ class _IncomesPageState extends State<IncomesPage> {
   }
 }
 
-void main() => runApp(MaterialApp(home: IncomesPage()));
+void main() => runApp(const MaterialApp(home: IncomesPage()));
