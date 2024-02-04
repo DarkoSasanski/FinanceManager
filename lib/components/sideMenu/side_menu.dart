@@ -1,4 +1,5 @@
 import 'package:financemanager/pages/addAccount.dart';
+import 'package:financemanager/pages/addCategory.dart';
 import 'package:financemanager/pages/dashboard.dart';
 import 'package:flutter/material.dart';
 
@@ -84,8 +85,10 @@ class SideMenu extends StatelessWidget {
             title: const Text('Categories',
                 style: TextStyle(color: Colors.grey, fontSize: 25)),
             onTap: () {
-              // Handle item 2 tap
-            },
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const CategoriesPage(),
+              ));
+              },
           ),
           const Divider(
             color: Colors.grey,
