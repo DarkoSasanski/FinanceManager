@@ -236,6 +236,7 @@ class _IncomesPageState extends State<IncomesPage> {
       incomes.add(income);
       if (income.isReceived) {
         account.addIncome(income);
+        account.amount+=amount;
       }
     });
   }
@@ -326,6 +327,7 @@ class _IncomesPageState extends State<IncomesPage> {
                           setState(() {
                             income.isReceived = true;
                             income.account.addIncome(income);
+                            income.account.amount+=income.amount;
                           });
                         },
                         child: const Text(

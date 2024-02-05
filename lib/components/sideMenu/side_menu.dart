@@ -1,5 +1,6 @@
 import 'package:financemanager/pages/addAccount.dart';
 import 'package:financemanager/pages/addCategory.dart';
+import 'package:financemanager/pages/addExpense.dart';
 import 'package:financemanager/pages/addIncome.dart';
 import 'package:financemanager/pages/dashboard.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,12 @@ class SideMenu extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.only(top: 25),
         children: <Widget>[
+          const Divider(
+            color: Colors.grey,
+            thickness: 0.5,
+            indent: 10,
+            endIndent: 10,
+          ),
           ListTile(
             leading: const Icon(
               Icons.close_outlined,
@@ -135,6 +142,21 @@ class SideMenu extends StatelessWidget {
             onTap: () {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const IncomesPage(),
+              ));
+            },
+          ),
+          const Divider(
+            color: Colors.grey,
+            thickness: 0.5,
+            indent: 10,
+            endIndent: 10,
+          ),
+          ListTile(
+            title: const Text('Expenses',
+                style: TextStyle(color: Colors.grey, fontSize: 25)),
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const ExpensesPage(),
               ));
             },
           ),
