@@ -70,8 +70,14 @@ class _DashboardState extends State<Dashboard> {
 
   void updateSelectedMonth(int? index) {
     if (index == null) return;
+    if (index <= 0) {
+      index = months.length;
+    }
+    if (index > months.length) {
+      index = 1;
+    }
     setState(() {
-      _selectedMonth = index;
+      _selectedMonth = index!;
     });
   }
 

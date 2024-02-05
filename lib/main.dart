@@ -19,7 +19,8 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.tealAccent[400],
         ),
         textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(primary: Colors.white),
+          style: TextButton.styleFrom(
+              foregroundColor: const Color.fromRGBO(16, 19, 37, 1)),
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
         appBarTheme: const AppBarTheme(

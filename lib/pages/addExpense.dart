@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../components/appBar/custom_app_bar.dart';
 import '../components/sideMenu/side_menu.dart';
 import '../models/Account.dart';
@@ -176,36 +177,28 @@ class _ExpensesPageState extends State<ExpensesPage> {
   }
 
   Widget _actionButtons(BuildContext context, StateSetter setDialogState) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        TextButton(
-          child: const Text('Cancel', style: TextStyle(color: Colors.white)),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.tealAccent,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          ),
-          onPressed: () {
-            if (description.isNotEmpty &&
-                amount > 0 &&
-                selectedCategory != null &&
-                selectedAccount != null) {
-              _addExpense(description, amount, selectedDate, selectedAccount!,
-                  selectedCategory!);
-              description = '';
-              amount = 0;
-              selectedAccount = null;
-              Navigator.of(context).pop();
-            }
-          },
-          child: const Text('Add', style: TextStyle(color: Colors.white)),
-        ),
-      ],
-    );
+    return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+      TextButton(
+        child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      TextButton(
+        onPressed: () {
+          if (description.isNotEmpty &&
+              amount > 0 &&
+              selectedCategory != null &&
+              selectedAccount != null) {
+            _addExpense(description, amount, selectedDate, selectedAccount!,
+                selectedCategory!);
+            description = '';
+            amount = 0;
+            selectedAccount = null;
+            Navigator.of(context).pop();
+          }
+        },
+        child: const Text('OK', style: TextStyle(color: Colors.tealAccent)),
+      ),
+    ]);
   }
 
   void _addExpense(String description, int amount, DateTime date,
@@ -264,7 +257,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
                       color: Colors.grey[300],
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     'Date: ${expense.date.day}/${expense.date.month}/${expense.date.year}',
                     style: TextStyle(
@@ -272,10 +265,10 @@ class _ExpensesPageState extends State<ExpensesPage> {
                       color: Colors.grey[300],
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     '\$${expense.amount}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFFcfd2d8),

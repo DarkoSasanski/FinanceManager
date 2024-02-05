@@ -163,7 +163,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                     ),
                     const SizedBox(height: 20),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         TextButton(
                           child: const Text('Cancel',
@@ -172,13 +172,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                             Navigator.of(context).pop();
                           },
                         ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: currentColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
+                        TextButton(
                           onPressed: () {
                             if (categoryName.isNotEmpty) {
                               _addCategory(categoryName);
@@ -186,7 +180,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                             }
                           },
                           child: const Text('Add',
-                              style: TextStyle(color: Colors.white)),
+                              style: TextStyle(color: Colors.tealAccent)),
                         ),
                       ],
                     ),

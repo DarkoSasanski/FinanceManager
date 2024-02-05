@@ -16,12 +16,6 @@ class SideMenu extends StatelessWidget {
       child: ListView(
         padding: const EdgeInsets.only(top: 25),
         children: <Widget>[
-          const Divider(
-            color: Colors.grey,
-            thickness: 0.5,
-            indent: 10,
-            endIndent: 10,
-          ),
           ListTile(
             leading: const Icon(
               Icons.close_outlined,

@@ -184,7 +184,7 @@ class _IncomesPageState extends State<IncomesPage> {
                       ),
                       const SizedBox(height: 20),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           TextButton(
                             child: const Text('Cancel',
@@ -193,23 +193,21 @@ class _IncomesPageState extends State<IncomesPage> {
                               Navigator.of(context).pop();
                             },
                           ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.tealAccent,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            onPressed: () {
-                              if (source.isNotEmpty && amount > 0) {
-                                _addIncome(source, description, amount,
-                                    isReceived, selectedDate, selectedAccount);
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            child: const Text('Add',
-                                style: TextStyle(color: Colors.white)),
-                          ),
+                          TextButton(
+                              onPressed: () {
+                                if (source.isNotEmpty && amount > 0) {
+                                  _addIncome(
+                                      source,
+                                      description,
+                                      amount,
+                                      isReceived,
+                                      selectedDate,
+                                      selectedAccount);
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                              child: const Text('OK',
+                                  style: TextStyle(color: Colors.tealAccent))),
                         ],
                       ),
                     ],
@@ -236,7 +234,7 @@ class _IncomesPageState extends State<IncomesPage> {
       incomes.add(income);
       if (income.isReceived) {
         account.addIncome(income);
-        account.amount+=amount;
+        account.amount += amount;
       }
     });
   }
@@ -327,7 +325,7 @@ class _IncomesPageState extends State<IncomesPage> {
                           setState(() {
                             income.isReceived = true;
                             income.account.addIncome(income);
-                            income.account.amount+=income.amount;
+                            income.account.amount += income.amount;
                           });
                         },
                         child: const Text(

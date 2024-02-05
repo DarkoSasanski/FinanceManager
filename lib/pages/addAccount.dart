@@ -107,7 +107,7 @@ class _AccountsPageState extends State<AccountsPage> {
                                   Navigator.of(context).pop();
                                 }
                               : null,
-                          child: const Text('OK',
+                          child: const Text('Add',
                               style: TextStyle(color: Colors.tealAccent)),
                         ),
                       ],
