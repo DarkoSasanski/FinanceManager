@@ -206,7 +206,7 @@ class _IncomesPageState extends State<IncomesPage> {
                                   Navigator.of(context).pop();
                                 }
                               },
-                              child: const Text('OK',
+                              child: const Text('Add',
                                   style: TextStyle(color: Colors.tealAccent))),
                         ],
                       ),

@@ -196,7 +196,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
             Navigator.of(context).pop();
           }
         },
-        child: const Text('OK', style: TextStyle(color: Colors.tealAccent)),
+        child: const Text('Add', style: TextStyle(color: Colors.tealAccent)),
       ),
     ]);
   }
