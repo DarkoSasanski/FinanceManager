@@ -5,12 +5,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String? actionButtonText;
   final VoidCallback? actionButtonOnPressed;
+  final Widget? appBarButton;
 
   const CustomAppBar({
     Key? key,
     required this.title,
     this.actionButtonText,
     this.actionButtonOnPressed,
+    this.appBarButton,
   }) : super(key: key);
 
   @override
@@ -30,19 +32,23 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: actionButtonText != null && actionButtonOnPressed != null
           ? [
               Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: CustomActionButton(
-                  actionButtonText: actionButtonText!,
-                  actionButtonOnPressed: actionButtonOnPressed!,
-                  gradientColors: const [
-                    Color(0xFF00B686),
-                    Color(0xFF008A60),
-                    Color(0xff00573a),
-                  ],
-                )
-              ),
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: CustomActionButton(
+                    actionButtonText: actionButtonText!,
+                    actionButtonOnPressed: actionButtonOnPressed!,
+                    gradientColors: const [
+                      Color(0xFF00B686),
+                      Color(0xFF008A60),
+                      Color(0xff00573a),
+                    ],
+                  )),
             ]
-          : [],
+          : [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: appBarButton!,
+              ),
+            ],
     );
   }
 

@@ -3,7 +3,9 @@ import 'package:financemanager/components/buttons/custom_action_button.dart';
 import 'package:financemanager/components/dashboard/dashboard_pie_chart_slider.dart';
 import 'package:flutter/material.dart';
 
+import '../components/buttons/add_income_app_bar_button.dart';
 import '../components/sideMenu/side_menu.dart';
+import '../models/Account.dart';
 import '../models/Category.dart';
 import '../models/Month.dart';
 
@@ -85,11 +87,17 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
+    void _addIncome(String source, String description, int amount,
+        bool isReceived, DateTime date, Account? account) {}
+
     return Scaffold(
         appBar: CustomAppBar(
-            title: "Dashboard",
+          title: "Dashboard",
+          appBarButton: AddIncomeAppBarButton(
+            onSubmitted: _addIncome,
             actionButtonText: "Add funds",
-            actionButtonOnPressed: () {}),
+          ),
+        ),
         drawer: const SideMenu(),
         body: Container(
           padding: const EdgeInsets.all(13),
