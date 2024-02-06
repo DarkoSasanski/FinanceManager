@@ -1,6 +1,12 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../repositories/account_repository.dart';
+import '../repositories/category_repository.dart';
+import '../repositories/expense_repository.dart';
+import '../repositories/income_repository.dart';
+import '../repositories/plan_repository.dart';
+
 class DatabaseHelper {
   static Database? _database;
 
@@ -13,6 +19,27 @@ class DatabaseHelper {
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'finance_manager.db');
     return await openDatabase(path, version: 1, onCreate: _createTable);
+  }
+
+  Future<AccountRepository> accountRepository() async {
+    return AccountRepository(await database);
+  }
+
+  Future<CategoryRepository> categoryRepository() async {
+    return CategoryRepository(await database);
+  }
+
+  Future<ExpenseRepository> expenseRepository() async {
+    return ExpenseRepository(
+        await database, await accountRepository(), await categoryRepository());
+  }
+
+  Future<IncomeRepository> incomeRepository() async {
+    return IncomeRepository(await database, await accountRepository());
+  }
+
+  Future<PlanRepository> planRepository() async {
+    return PlanRepository(await database, await accountRepository());
   }
 
   Future<void> _createTable(Database db, int version) async {
