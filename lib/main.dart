@@ -1,7 +1,11 @@
+import 'package:financemanager/helpers/database_helper.dart';
 import 'package:financemanager/pages/dashboard.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  DatabaseHelper databaseHelper = DatabaseHelper();
+  databaseHelper.database;
   runApp(const MyApp());
 }
 
