@@ -35,6 +35,7 @@ class Plan {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'type': type,
       'amount': amount,
       'dateStart': dateStart.toIso8601String(),

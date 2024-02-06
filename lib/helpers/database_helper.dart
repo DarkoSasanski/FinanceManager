@@ -24,7 +24,7 @@ class DatabaseHelper {
           fontFamily VARCHAR(255) NOT NULL,
           fontPackage VARCHAR(255) NOT NULL,
           matchTextDirection BOOLEAN NOT NULL,
-          icon VARCHAR(255) NOT NULL
+          color VARCHAR(255) NOT NULL
       );
         
       CREATE TABLE IF NOT EXISTS Account (    
