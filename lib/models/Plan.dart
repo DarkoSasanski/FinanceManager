@@ -33,7 +33,6 @@ class Plan {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'type': type,
       'goalAmount': goalAmount,
       'currentAmount': currentAmount,

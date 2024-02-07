@@ -57,7 +57,6 @@ class Account {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
       'amount': amount,
     };

@@ -48,10 +48,10 @@ class DatabaseHelper {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name VARCHAR(255) NOT NULL,
           codePoint INT NOT NULL,
-          fontFamily VARCHAR(255) NOT NULL,
-          fontPackage VARCHAR(255) NOT NULL,
+          fontFamily VARCHAR(255),
+          fontPackage VARCHAR(255),
           matchTextDirection BOOLEAN NOT NULL,
-          color VARCHAR(255) NOT NULL
+          color INT NOT NULL
       );
         ''');
 

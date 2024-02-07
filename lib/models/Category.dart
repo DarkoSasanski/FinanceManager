@@ -46,13 +46,12 @@ class Category {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
       'color': color.value,
       'codePoint': icon.codePoint,
       'fontFamily': icon.fontFamily,
       'fontPackage': icon.fontPackage,
-      'matchTextDirection': icon.matchTextDirection,
+      'matchTextDirection': icon.matchTextDirection ? 1 : 0,
     };
   }
 }

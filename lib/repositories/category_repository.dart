@@ -48,7 +48,7 @@ class CategoryRepository {
           maps[i]['codePoint'],
           fontFamily: maps[i]['fontFamily'],
           fontPackage: maps[i]['fontPackage'],
-          matchTextDirection: maps[i]['matchTextDirection'],
+          matchTextDirection: maps[i]['matchTextDirection'] == 1,
         ),
       );
     });

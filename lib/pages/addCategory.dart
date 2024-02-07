@@ -24,7 +24,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
     _loadCategories();
   }
   void _loadCategories() async {
-    final categoryRepository = await await _databaseHelper.categoryRepository();
+    final categoryRepository = await _databaseHelper.categoryRepository();
     final loadedCategories = await categoryRepository.findAll();
     setState(() {
       categories = loadedCategories;

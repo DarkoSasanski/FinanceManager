@@ -37,9 +37,8 @@ class Reminder {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'title': title,
-      'smount': amount,
+      'amount': amount,
       'date': date.toIso8601String(),
       'isComplete': isComplete,
       'category_id': category.id
