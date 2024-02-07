@@ -6,6 +6,8 @@ import 'package:financemanager/pages/addSavingPlans.dart';
 import 'package:financemanager/pages/dashboard.dart';
 import 'package:flutter/material.dart';
 
+import '../../pages/addReminder.dart';
+
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
 
@@ -124,7 +126,9 @@ class SideMenu extends StatelessWidget {
             title: const Text('Reminders',
                 style: TextStyle(color: Colors.grey, fontSize: 25)),
             onTap: () {
-              // Handle item 2 tap
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const RemindersPage(),
+              ));
             },
           ),
           const Divider(
