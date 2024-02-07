@@ -31,7 +31,7 @@ class CategoryRepository {
         maps[0]['codePoint'],
         fontFamily: maps[0]['fontFamily'],
         fontPackage: maps[0]['fontPackage'],
-        matchTextDirection: maps[0]['matchTextDirection'],
+        matchTextDirection: maps[0]['matchTextDirection'] == 1,
       ),
     );
   }
