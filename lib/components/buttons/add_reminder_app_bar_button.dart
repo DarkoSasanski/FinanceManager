@@ -129,7 +129,7 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
                         title: const Text('Date',
                             style: TextStyle(color: Colors.white)),
                         trailing: GestureDetector(
-                          onTap: () => _selectDate(context),
+                          onTap: () => _selectDate(context, setDialogState),
                           child: Text(
                             '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
                             style: const TextStyle(
@@ -173,7 +173,8 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context) async {
+  Future<void> _selectDate(
+      BuildContext context, Function setDialogState) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: selectedDate,
@@ -181,7 +182,7 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
       lastDate: DateTime(2101),
     );
     if (pickedDate != null && pickedDate != selectedDate) {
-      setState(() {
+      setDialogState(() {
         selectedDate = pickedDate;
       });
     }

@@ -80,7 +80,8 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
                         title: const Text('Start Date',
                             style: TextStyle(color: Colors.white)),
                         trailing: GestureDetector(
-                          onTap: () => _selectStartDate(context),
+                          onTap: () =>
+                              _selectStartDate(context, setDialogState),
                           child: Text(
                             '${startDate.day}/${startDate.month}/${startDate.year}',
                             style: const TextStyle(
@@ -95,7 +96,7 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
                         title: const Text('End Date',
                             style: TextStyle(color: Colors.white)),
                         trailing: GestureDetector(
-                          onTap: () => _selectEndDate(context),
+                          onTap: () => _selectEndDate(context, setDialogState),
                           child: Text(
                             '${endDate.day}/${endDate.month}/${endDate.year}',
                             style: const TextStyle(
@@ -139,7 +140,8 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
     );
   }
 
-  Future<void> _selectEndDate(BuildContext context) async {
+  Future<void> _selectEndDate(
+      BuildContext context, Function setDialogState) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: endDate,
@@ -147,13 +149,14 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
       lastDate: DateTime(2101),
     );
     if (pickedDate != null && pickedDate != endDate) {
-      setState(() {
+      setDialogState(() {
         endDate = pickedDate;
       });
     }
   }
 
-  Future<void> _selectStartDate(BuildContext context) async {
+  Future<void> _selectStartDate(
+      BuildContext context, Function setDialogState) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: startDate,
@@ -161,7 +164,7 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
       lastDate: DateTime(2101),
     );
     if (pickedDate != null && pickedDate != startDate) {
-      setState(() {
+      setDialogState(() {
         startDate = pickedDate;
       });
     }

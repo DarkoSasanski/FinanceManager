@@ -173,7 +173,7 @@ class _AddIncomeAppBarButtonState extends State<AddIncomeAppBarButton> {
                         title: const Text('Date',
                             style: TextStyle(color: Colors.white)),
                         trailing: GestureDetector(
-                          onTap: () => _selectDate(context),
+                          onTap: () => _selectDate(context, setDialogState),
                           child: Text(
                             '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
                             style: const TextStyle(
@@ -222,7 +222,7 @@ class _AddIncomeAppBarButtonState extends State<AddIncomeAppBarButton> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context) async {
+  Future<void> _selectDate(BuildContext context, Function setDialogState) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: selectedDate,
@@ -230,7 +230,7 @@ class _AddIncomeAppBarButtonState extends State<AddIncomeAppBarButton> {
       lastDate: DateTime(2101),
     );
     if (pickedDate != null && pickedDate != selectedDate) {
-      setState(() {
+      setDialogState(() {
         selectedDate = pickedDate;
       });
     }

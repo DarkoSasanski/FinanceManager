@@ -25,7 +25,7 @@ class _AddCategoryAppBarButtonState extends State<AddCategoryAppBarButton> {
     Icons.shopping_bag
   ];
 
-  void _showColorPicker() {
+  void _showColorPicker(Function setDialogState) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -34,7 +34,7 @@ class _AddCategoryAppBarButtonState extends State<AddCategoryAppBarButton> {
           content: SingleChildScrollView(
             child: ColorPicker(
               pickerColor: currentColor,
-              onColorChanged: (color) => setState(() => currentColor = color),
+              onColorChanged: (color) => setDialogState(() => currentColor = color),
               showLabel: false,
               pickerAreaHeightPercent: 0.8,
             ),
@@ -135,7 +135,7 @@ class _AddCategoryAppBarButtonState extends State<AddCategoryAppBarButton> {
                     ),
                     const SizedBox(height: 20),
                     GestureDetector(
-                      onTap: _showColorPicker,
+                      onTap: () => _showColorPicker(setDialogState),
                       child: Container(
                         padding: const EdgeInsets.all(15),
                         decoration: BoxDecoration(
