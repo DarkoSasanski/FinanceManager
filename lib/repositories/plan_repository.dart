@@ -31,10 +31,9 @@ class PlanRepository {
     return Plan.withId(
       id: maps[0]['id'],
       type: maps[0]['type'],
-      amount: maps[0]['amount'],
+      goalAmount: maps[0]['amount'],
       dateStart: DateTime.parse(maps[0]['dateStart']),
       dateEnd: DateTime.parse(maps[0]['dateEnd']),
-      account: account,
     );
   }
 
@@ -50,10 +49,9 @@ class PlanRepository {
           return Plan.withId(
             id: maps[i]['id'],
             type: maps[i]['type'],
-            amount: maps[i]['amount'],
+            goalAmount: maps[i]['amount'],
             dateStart: DateTime.parse(maps[i]['dateStart']),
             dateEnd: DateTime.parse(maps[i]['dateEnd']),
-            account: account,
           );
         } as Plan Function(int index));
   }
