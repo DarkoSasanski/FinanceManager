@@ -34,7 +34,7 @@ class Category {
         icon: IconData(
           json['codePoint'],
           fontFamily: json['fontFamily'],
-          fontPackage: json['fontPackage'],
+          fontPackage: json['fontPackage'] ?? '',
           matchTextDirection: json['matchTextDirection'],
         ),
         expenses: json['expenses'] != null
@@ -51,7 +51,7 @@ class Category {
       'color': color.value,
       'codePoint': icon.codePoint,
       'fontFamily': icon.fontFamily,
-      'fontPackage': icon.fontPackage,
+      'fontPackage': 'cupertino_icons',
       'matchTextDirection': icon.matchTextDirection,
     };
   }

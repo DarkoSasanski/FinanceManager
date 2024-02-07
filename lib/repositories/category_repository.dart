@@ -40,15 +40,25 @@ class CategoryRepository {
     final List<Map<String, dynamic>> maps = await _db.query('Category');
 
     return List.generate(maps.length, (i) {
+      Color color = Color(int.parse(maps[i]['color']));
+
+      bool matchTextDirection = maps[i]['matchTextDirection'] is int
+          ? maps[i]['matchTextDirection'] != 0
+          : maps[i]['matchTextDirection'];
+
+      String fontFamily = maps[i]['fontFamily'] is String
+          ? maps[i]['fontFamily']
+          : 'Arial';
+
       return Category.withId(
         id: maps[i]['id'],
         name: maps[i]['name'],
-        color: Color(maps[i]['color']),
+        color: color,
         icon: IconData(
           maps[i]['codePoint'],
-          fontFamily: maps[i]['fontFamily'],
+          fontFamily: fontFamily,
           fontPackage: maps[i]['fontPackage'],
-          matchTextDirection: maps[i]['matchTextDirection'],
+          matchTextDirection: matchTextDirection,
         ),
       );
     });
