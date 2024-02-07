@@ -14,7 +14,7 @@ class CategoriesPage extends StatefulWidget {
 }
 
 class _CategoriesPageState extends State<CategoriesPage> {
- final DatabaseHelper _databaseHelper = DatabaseHelper();
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
   List<Category> categories = [];
 
   void _addCategory(String name, Color color, IconData icon) async {
@@ -23,6 +23,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
     await categoryRepository.insertCategory(category);
     _loadCategories();
   }
+
   void _loadCategories() async {
     final categoryRepository = await _databaseHelper.categoryRepository();
     final loadedCategories = await categoryRepository.findAll();
@@ -30,12 +31,12 @@ class _CategoriesPageState extends State<CategoriesPage> {
       categories = loadedCategories;
     });
   }
- @override
- void initState() {
-   super.initState();
-   _loadCategories();
- }
 
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
 
   @override
   Widget build(BuildContext context) {

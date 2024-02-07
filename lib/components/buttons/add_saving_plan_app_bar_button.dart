@@ -1,19 +1,16 @@
 import 'package:financemanager/components/buttons/custom_action_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import '../../models/Account.dart';
 
 class AddSavingPlanAppBarButton extends StatefulWidget {
   final String actionButtonText;
-  final void Function(String, int, DateTime, DateTime)
-  onSubmitted;
+  final void Function(String, int, DateTime, DateTime) onSubmitted;
 
   const AddSavingPlanAppBarButton(
       {super.key, required this.onSubmitted, required this.actionButtonText});
 
   @override
-  State<AddSavingPlanAppBarButton> createState() => _AddSavingPlanAppBarButtonState();
+  State<AddSavingPlanAppBarButton> createState() =>
+      _AddSavingPlanAppBarButtonState();
 }
 
 class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
@@ -30,7 +27,7 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
         return Dialog(
           backgroundColor: const Color.fromRGBO(29, 31, 52, 1),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(20),
@@ -64,7 +61,8 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        onChanged: (value) => goalAmount = int.tryParse(value) ?? 0,
+                        onChanged: (value) =>
+                            goalAmount = int.tryParse(value) ?? 0,
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           labelText: 'Goal Amount',
@@ -84,8 +82,7 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
                         trailing: GestureDetector(
                           onTap: () => _selectStartDate(context),
                           child: Text(
-                            '${startDate.day}/${startDate
-                                .month}/${startDate.year}',
+                            '${startDate.day}/${startDate.month}/${startDate.year}',
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.white,
@@ -100,8 +97,7 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
                         trailing: GestureDetector(
                           onTap: () => _selectEndDate(context),
                           child: Text(
-                            '${endDate.day}/${endDate
-                                .month}/${endDate.year}',
+                            '${endDate.day}/${endDate.month}/${endDate.year}',
                             style: const TextStyle(
                               fontSize: 16,
                               color: Colors.white,
@@ -124,10 +120,7 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
                               onPressed: () {
                                 if (type.isNotEmpty && goalAmount > 0) {
                                   widget.onSubmitted(
-                                      type,
-                                      goalAmount,
-                                      startDate,
-                                      endDate);
+                                      type, goalAmount, startDate, endDate);
                                   Navigator.of(context).pop();
                                 }
                               },
@@ -145,6 +138,7 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
       },
     );
   }
+
   Future<void> _selectEndDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,

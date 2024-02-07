@@ -18,8 +18,8 @@ class RemindersPage extends StatefulWidget {
 class _RemindersPageState extends State<RemindersPage> {
   List<Reminder> reminders = [];
 
-  void _addReminder(String title, int amount,
-      DateTime date, bool isCompleted, Category? category) {
+  void _addReminder(String title, int amount, DateTime date, bool isCompleted,
+      Category? category) {
     setState(() {
       Reminder reminder = Reminder(
           title: title,
@@ -28,6 +28,7 @@ class _RemindersPageState extends State<RemindersPage> {
           date: date,
           category: category!);
       reminders.add(reminder);
+
       ///if (reminder.isComplete) {
       ///  account.addExpense(Expense(description: reminder.title, amount: reminder.amount, date: reminder.dateEnd, account: account, category: reminder.category));
       ///  account.amount -= amount;
@@ -40,11 +41,13 @@ class _RemindersPageState extends State<RemindersPage> {
     await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
-        Account? selectedAccount = availableAccounts.isNotEmpty ? availableAccounts.first : null;
+        Account? selectedAccount =
+            availableAccounts.isNotEmpty ? availableAccounts.first : null;
 
         return AlertDialog(
           backgroundColor: const Color.fromRGBO(29, 31, 52, 1),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           title: const Text(
             'Choose Account For Expense',
             style: TextStyle(
@@ -93,19 +96,26 @@ class _RemindersPageState extends State<RemindersPage> {
               onPressed: () {
                 Navigator.of(context).pop(false); // Cancel
               },
-              child: const Text('Cancel', style: TextStyle(color: Colors.tealAccent)),
+              child: const Text('Cancel',
+                  style: TextStyle(color: Colors.tealAccent)),
             ),
             TextButton(
               onPressed: () {
                 setState(() {
                   reminder.account = selectedAccount!;
-                  reminder.account.addExpense(Expense(description: reminder.title, amount: reminder.amount, date: DateTime.now(), account: reminder.account, category: reminder.category));
+                  reminder.account.addExpense(Expense(
+                      description: reminder.title,
+                      amount: reminder.amount,
+                      date: DateTime.now(),
+                      account: reminder.account,
+                      category: reminder.category));
                   reminder.account.amount -= reminder.amount;
                   reminder.isComplete = true;
                 });
                 Navigator.of(context).pop(true); // Confirm
               },
-              child: const Text('Add', style: TextStyle(color: Colors.tealAccent)),
+              child:
+                  const Text('Add', style: TextStyle(color: Colors.tealAccent)),
             ),
           ],
         );
@@ -178,7 +188,7 @@ class _RemindersPageState extends State<RemindersPage> {
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
                           side:
-                          const BorderSide(color: Colors.white, width: 1.0),
+                              const BorderSide(color: Colors.white, width: 1.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -201,5 +211,3 @@ class _RemindersPageState extends State<RemindersPage> {
     );
   }
 }
-
-void main() => runApp(const MaterialApp(home: RemindersPage()));

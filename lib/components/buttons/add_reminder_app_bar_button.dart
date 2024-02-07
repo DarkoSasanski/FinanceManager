@@ -3,17 +3,17 @@ import 'package:financemanager/models/Category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 class AddReminderAppBarButton extends StatefulWidget {
   final String actionButtonText;
-  final void Function(String title, int amount, DateTime date, bool isCompleted, Category? category)
-  onSubmitted;
+  final void Function(String title, int amount, DateTime date, bool isCompleted,
+      Category? category) onSubmitted;
 
   const AddReminderAppBarButton(
       {super.key, required this.onSubmitted, required this.actionButtonText});
 
   @override
-  State<AddReminderAppBarButton> createState() => _AddReminderAppBarButtonState();
+  State<AddReminderAppBarButton> createState() =>
+      _AddReminderAppBarButtonState();
 }
 
 class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
@@ -40,7 +40,7 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
         return Dialog(
           backgroundColor: const Color.fromRGBO(29, 31, 52, 1),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(20),
@@ -105,7 +105,8 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
                         icon: const Icon(Icons.arrow_drop_down,
                             color: Colors.grey),
                         items: availableCategories
-                            .map<DropdownMenuItem<Category>>((Category category) {
+                            .map<DropdownMenuItem<Category>>(
+                                (Category category) {
                           return DropdownMenuItem<Category>(
                             value: category,
                             child: Text(
@@ -152,12 +153,8 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
                           TextButton(
                               onPressed: () {
                                 if (title.isNotEmpty && amount > 0) {
-                                  widget.onSubmitted(
-                                      title,
-                                      amount,
-                                      selectedDate,
-                                      false,
-                                      selectedCategory);
+                                  widget.onSubmitted(title, amount,
+                                      selectedDate, false, selectedCategory);
                                   Navigator.of(context).pop();
                                 }
                               },

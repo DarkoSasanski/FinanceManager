@@ -12,18 +12,18 @@ class Reminder {
 
   Reminder(
       {required this.title,
-        required this.amount,
-        required this.date,
-        required this.isComplete,
-        required this.category});
+      required this.amount,
+      required this.date,
+      required this.isComplete,
+      required this.category});
 
   Reminder.withId(
       {required this.id,
-        required this.title,
-        required this.amount,
-        required this.date,
-        required this.isComplete,
-        required this.category});
+      required this.title,
+      required this.amount,
+      required this.date,
+      required this.isComplete,
+      required this.category});
 
   factory Reminder.fromJson(Map<String, dynamic> json) {
     return Reminder.withId(
