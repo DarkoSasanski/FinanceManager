@@ -3,44 +3,42 @@ import 'Account.dart';
 class Plan {
   int id = 0;
   late String type;
-  late int amount;
+  late int goalAmount;
+  late int currentAmount = 0;
   DateTime dateStart;
   DateTime dateEnd;
-  Account account;
+  late Account account;
 
   Plan(
       {required this.type,
-      required this.amount,
+      required this.goalAmount,
       required this.dateStart,
-      required this.dateEnd,
-      required this.account});
+      required this.dateEnd});
 
   Plan.withId(
       {required this.id,
       required this.type,
-      required this.amount,
+      required this.goalAmount,
       required this.dateStart,
-      required this.dateEnd,
-      required this.account});
+      required this.dateEnd});
 
   factory Plan.fromJson(Map<String, dynamic> json) {
     return Plan.withId(
         id: json['id'],
         type: json['type'],
-        amount: json['amount'],
+        goalAmount: json['goalAmount'],
         dateStart: DateTime.parse(json['dateStart']),
-        dateEnd: DateTime.parse(json['dateEnd']),
-        account: Account.fromJson(json['account']));
+        dateEnd: DateTime.parse(json['dateEnd']));
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'type': type,
-      'amount': amount,
+      'goalAmount': goalAmount,
+      'currentAmount': currentAmount,
       'dateStart': dateStart.toIso8601String(),
-      'dateEnd': dateEnd.toIso8601String(),
-      'account_id': account.id,
+      'dateEnd': dateEnd.toIso8601String()
     };
   }
 }
