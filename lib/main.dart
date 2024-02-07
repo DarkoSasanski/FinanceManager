@@ -2,10 +2,10 @@ import 'package:financemanager/helpers/database_helper.dart';
 import 'package:financemanager/pages/dashboard.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseHelper databaseHelper = DatabaseHelper();
-  databaseHelper.database;
+  await databaseHelper.database;
   runApp(const MyApp());
 }
 

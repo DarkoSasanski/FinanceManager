@@ -53,13 +53,17 @@ class DatabaseHelper {
           matchTextDirection BOOLEAN NOT NULL,
           color VARCHAR(255) NOT NULL
       );
-        
+        ''');
+
+    await db.execute('''
       CREATE TABLE IF NOT EXISTS Account (    
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           name VARCHAR(255) NOT NULL,
           amount INT NOT NULL
       );
-      
+      ''');
+
+    await db.execute('''  
       CREATE TABLE IF NOT EXISTS Expense (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           description VARCHAR(255) NOT NULL,
@@ -70,7 +74,9 @@ class DatabaseHelper {
           FOREIGN KEY (account_id) REFERENCES Account(id),
           FOREIGN KEY (category_id) REFERENCES Category(id)
       );
-      
+      ''');
+
+    await db.execute('''
       CREATE TABLE IF NOT EXISTS Income (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           source VARCHAR(255) NOT NULL,
@@ -81,7 +87,9 @@ class DatabaseHelper {
           isReceived BOOLEAN NOT NULL,
           FOREIGN KEY (account_id) REFERENCES Account(id)
       );
-      
+      ''');
+
+    await db.execute('''
       CREATE TABLE IF NOT EXISTS Plan (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           type VARCHAR(255) NOT NULL,
