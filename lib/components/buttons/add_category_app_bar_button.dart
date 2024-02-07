@@ -41,7 +41,8 @@ class _AddCategoryAppBarButtonState extends State<AddCategoryAppBarButton> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Done'),
+              child: const Text('Done',
+                  style: TextStyle(color: Colors.tealAccent)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -200,6 +201,5 @@ class _AddCategoryAppBarButtonState extends State<AddCategoryAppBarButton> {
           Color(0xFF008A60),
           Color(0xff00573a),
         ]);
-    ;
   }
 }
