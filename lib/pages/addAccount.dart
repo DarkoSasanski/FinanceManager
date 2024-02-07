@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../components/appBar/custom_app_bar.dart';
 import '../components/sideMenu/side_menu.dart';
+import '../helpers/database_helper.dart';
 import '../models/Account.dart';
 
 class AccountsPage extends StatefulWidget {
@@ -13,16 +14,31 @@ class AccountsPage extends StatefulWidget {
 }
 
 class _AccountsPageState extends State<AccountsPage> {
-  List<Account> accounts = [
-    Account(name: 'Payment card', amount: 1500),
-    Account(name: 'Cash', amount: 1500),
-  ];
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
+  List<Account> accounts = [];
 
-  void _addAccount(String name, int amount) {
+  @override
+  void initState() {
+
+    super.initState();
+    loadAccounts();
+  }
+
+  void loadAccounts() async {
+    final accountRepository = await _databaseHelper.accountRepository();
+    final List<Account> loadedAccounts = await accountRepository.findAll();
+
     setState(() {
-      accounts.add(Account(name: name, amount: amount));
+      accounts = loadedAccounts;
     });
   }
+
+  void _addAccount(String name, int amount) async {
+    final accountRepository = await _databaseHelper.accountRepository();
+    await accountRepository.insertAccount(Account(name: name, amount: amount));
+    loadAccounts();
+  }
+
 
   @override
   Widget build(BuildContext context) {

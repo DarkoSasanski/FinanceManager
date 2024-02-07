@@ -1,3 +1,4 @@
+import 'package:financemanager/helpers/database_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../components/appBar/custom_app_bar.dart';
@@ -13,13 +14,28 @@ class CategoriesPage extends StatefulWidget {
 }
 
 class _CategoriesPageState extends State<CategoriesPage> {
+ final DatabaseHelper _databaseHelper = DatabaseHelper();
   List<Category> categories = [];
 
-  void _addCategory(String name, Color color, IconData icon) {
+  void _addCategory(String name, Color color, IconData icon) async {
+    final categoryRepository = await _databaseHelper.categoryRepository();
+    final category = Category(name: name, color: color, icon: icon);
+    await categoryRepository.insertCategory(category);
+    _loadCategories();
+  }
+  void _loadCategories() async {
+    final categoryRepository = await await _databaseHelper.categoryRepository();
+    final loadedCategories = await categoryRepository.findAll();
     setState(() {
-      categories.add(Category(name: name, color: color, icon: icon));
+      categories = loadedCategories;
     });
   }
+ @override
+ void initState() {
+   super.initState();
+   _loadCategories();
+ }
+
 
   @override
   Widget build(BuildContext context) {
