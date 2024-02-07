@@ -2,6 +2,7 @@ import 'package:financemanager/components/buttons/custom_action_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../helpers/database_helper.dart';
 import '../../models/Account.dart';
 
 class AddIncomeAppBarButton extends StatefulWidget {
@@ -19,14 +20,16 @@ class AddIncomeAppBarButton extends StatefulWidget {
 class _AddIncomeAppBarButtonState extends State<AddIncomeAppBarButton> {
   DateTime selectedDate = DateTime.now();
 
-  void _showAddIncomeDialog() {
+  Future<void> _showAddIncomeDialog() async {
     String source = '';
     String description = '';
     int amount = 0;
     bool isReceived = true;
     Account? selectedAccount;
+    final DatabaseHelper _databaseHelper = DatabaseHelper();
+    final accountRepository = await _databaseHelper.accountRepository();
 
-    List<Account> availableAccounts = [Account(name: "Test", amount: 150)];
+    List<Account> availableAccounts = await accountRepository.findAll();
 
     if (availableAccounts.isNotEmpty) {
       selectedAccount = availableAccounts[0];

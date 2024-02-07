@@ -57,4 +57,13 @@ class AccountRepository {
       whereArgs: [id],
     );
   }
+
+  Future<void> updateAmount(Account account) async {
+    await _db.update(
+      'Account',
+      {'amount': account.amount},
+      where: 'id = ?',
+      whereArgs: [account.id],
+    );
+  }
 }

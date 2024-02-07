@@ -40,23 +40,30 @@ class IncomeRepository {
 
   Future<List<Income>> findAll() async {
     final List<Map<String, dynamic>> maps = await _db.query('Income');
+    List<Income> incomes = [];
 
-    return List.generate(
-        maps.length,
-        (i) async {
-          Account account =
-              await accountRepository.findById(maps[i]['account_id']);
-
-          return Income.withId(
-            id: maps[i]['id'],
-            description: maps[i]['description'],
-            amount: maps[i]['amount'],
-            date: DateTime.parse(maps[i]['date']),
+    for (var map in maps) {
+      try {
+        Account? account = await accountRepository.findById(map['account_id']);
+        if (account != null) {
+          incomes.add(Income.withId(
+            id: map['id'],
+            description: map['description'],
+            amount: map['amount'],
+            date: DateTime.parse(map['date']),
             account: account,
-            source: maps[i]['source'],
-            isReceived: maps[i]['isReceived'],
-          );
-        } as Income Function(int index));
+            source: map['source'],
+            isReceived: map['isReceived'] == 1,
+          ));
+        } else {
+          print("Account not found for income ID: ${map['id']}");
+        }
+      } catch (e) {
+        print("Error processing income ID: ${map['id']}, Error: $e");
+      }
+    }
+
+    return incomes;
   }
 
   Future<void> updateIncome(Income income) async {
@@ -71,6 +78,14 @@ class IncomeRepository {
   Future<void> deleteIncome(int id) async {
     await _db.delete(
       'Income',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+  Future<void> markAsReceived(int id) async {
+    await _db.update(
+      'Income',
+      {'isReceived': true},
       where: 'id = ?',
       whereArgs: [id],
     );
