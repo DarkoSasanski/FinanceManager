@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../helpers/database_helper.dart';
 import '../../models/Account.dart';
 import '../../models/Category.dart';
 import 'custom_action_button.dart';
@@ -18,19 +19,18 @@ class AddExpenseAppBarButton extends StatefulWidget {
 }
 
 class _AddExpenseAppBarButtonState extends State<AddExpenseAppBarButton> {
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
   DateTime selectedDate = DateTime.now();
   Category? selectedCategory;
-  List<Category> availableCategories = [
-    Category(name: "Groceries", color: Colors.white, icon: Icons.cabin),
-    Category(name: "Utilities", color: Colors.white, icon: Icons.cabin),
-    Category(name: "Entertainment", color: Colors.white, icon: Icons.cabin),
-  ];
   String description = '';
   int amount = 0;
   Account? selectedAccount;
-  List<Account> availableAccounts = [Account(name: "Test", amount: 150)];
 
-  void _showAddExpenseDialog() {
+  Future<void> _showAddExpenseDialog() async {
+    final categoryRepository = await _databaseHelper.categoryRepository();
+    final accountRepository = await _databaseHelper.accountRepository();
+    List<Category> availableCategories = await categoryRepository.findAll();
+    List<Account> availableAccounts =  await accountRepository.findAll();
     if (availableAccounts.isNotEmpty) {
       selectedAccount = availableAccounts[0];
     }

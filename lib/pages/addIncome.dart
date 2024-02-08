@@ -1,3 +1,4 @@
+import 'package:financemanager/helpers/database_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../components/appBar/custom_app_bar.dart';
@@ -14,25 +15,61 @@ class IncomesPage extends StatefulWidget {
 }
 
 class _IncomesPageState extends State<IncomesPage> {
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
   List<Income> incomes = [];
+  @override
+  void initState() {
 
-  void _addIncome(String source, String description, int amount,
-      bool isReceived, DateTime date, Account? account) {
+    super.initState();
+    loadIncomes();
+  }
+
+  void loadIncomes() async {
+    final incomeRepository = await _databaseHelper.incomeRepository();
+    final List<Income> loadedIncomes = await incomeRepository.findAll();
+
     setState(() {
-      Income income = Income(
-          source: source,
-          description: description,
-          amount: amount,
-          isReceived: isReceived,
-          date: date,
-          account: account!);
-      incomes.add(income);
-      if (income.isReceived) {
-        account.addIncome(income);
-        account.amount += amount;
-      }
+      incomes = loadedIncomes;
     });
   }
+  void _addIncome(String source, String description, int amount,
+      bool isReceived, DateTime date, Account? account) async {
+    if (account == null) return;
+    final incomeRepository = await _databaseHelper.incomeRepository();
+    final accountRepository = await _databaseHelper.accountRepository();
+    final Income income = Income(
+      source: source,
+      description: description,
+      amount: amount,
+      isReceived: isReceived,
+      date: date,
+      account: account,
+    );
+
+    await incomeRepository.insertIncome(income);
+
+    if (isReceived) {
+      account.amount += amount;
+      await accountRepository.updateAmount(account);
+    }
+    setState(() {
+      incomes.add(income);
+    });
+  }
+  void _markAsReceived(Income income) async {
+    final incomeRepository = await _databaseHelper.incomeRepository();
+    final accountRepository = await _databaseHelper.accountRepository();
+    if (!income.isReceived) {
+      income.isReceived = true;
+      await incomeRepository.markAsReceived(income.id);
+
+      income.account.amount += income.amount;
+      await accountRepository.updateAccount(income.account);
+
+      setState(() {});
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -105,11 +142,7 @@ class _IncomesPageState extends State<IncomesPage> {
                           ),
                         ),
                         onPressed: () {
-                          setState(() {
-                            income.isReceived = true;
-                            income.account.addIncome(income);
-                            income.account.amount += income.amount;
-                          });
+                          _markAsReceived(income);
                         },
                         child: const Text(
                           'Mark as Received',

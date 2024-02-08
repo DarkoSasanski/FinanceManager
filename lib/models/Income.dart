@@ -44,7 +44,7 @@ class Income {
       'amount': amount,
       'date': date.toIso8601String(),
       'account_id': account.id,
-      'isReceived': isReceived,
+      'isReceived': isReceived ? 1 : 0,
     };
   }
 }

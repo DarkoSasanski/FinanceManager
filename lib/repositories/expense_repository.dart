@@ -44,26 +44,26 @@ class ExpenseRepository {
 
   Future<List<Expense>> findAll() async {
     final List<Map<String, dynamic>> maps = await _db.query('Expense');
+    List<Expense> expenses = [];
 
-    return List.generate(
-        maps.length,
-        (i) async {
-          Account account =
-              await accountRepository.findById(maps[i]['account_id']);
-          Category category =
-              await categoryRepository.findById(maps[i]['category_id']);
+    for (var map in maps) {
+      Account account = await accountRepository.findById(map['account_id']);
+      Category category = await categoryRepository.findById(map['category_id']);
 
-          return Expense.withId(
-            id: maps[i]['id'],
-            description: maps[i]['description'],
-            amount: maps[i]['amount'],
-            date: DateTime.parse(maps[i]['date']),
-            account: account,
-            category: category,
-          );
-        } as Expense Function(int index));
+      Expense expense = Expense.withId(
+        id: map['id'],
+        description: map['description'],
+        amount: map['amount'],
+        date: DateTime.parse(map['date']),
+        account: account,
+        category: category,
+      );
+
+      expenses.add(expense);
+    }
+
+    return expenses;
   }
-
   Future<void> updateExpense(Expense expense) async {
     await _db.update(
       'Expense',
@@ -72,7 +72,6 @@ class ExpenseRepository {
       whereArgs: [expense.id],
     );
   }
-
   Future<void> deleteExpense(int id) async {
     await _db.delete(
       'Expense',
