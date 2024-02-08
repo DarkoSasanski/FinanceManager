@@ -39,7 +39,7 @@ class DatabaseHelper {
   }
 
   Future<PlanRepository> planRepository() async {
-    return PlanRepository(await database, await accountRepository());
+    return PlanRepository(await database);
   }
 
   Future<void> _createTable(Database db, int version) async {
@@ -93,10 +93,23 @@ class DatabaseHelper {
       CREATE TABLE IF NOT EXISTS Plan (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           type VARCHAR(255) NOT NULL,
-          amount INT NOT NULL,
+          goalAmount INT NOT NULL,
+          currentAmount INT NOT NULL,
           dateStart DATETIME NOT NULL,
-          dateEnd DATETIME NOT NULL,
+          dateEnd DATETIME NOT NULL
+      );
+    ''');
+
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS Reminder (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title VARCHAR(255) NOT NULL,
+          amount INT NOT NULL,
+          date DATETIME NOT NULL,
+          isCompleted BOOLEAN NOT NULL,
           account_id INT,
+          category_id INT,
+          FOREIGN KEY (category_id) REFERENCES Category(id),
           FOREIGN KEY (account_id) REFERENCES Account(id)
       );
     ''');

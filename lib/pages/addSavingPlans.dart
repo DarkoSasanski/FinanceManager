@@ -1,8 +1,11 @@
 import 'package:financemanager/components/buttons/add_saving_plan_app_bar_button.dart';
+import 'package:financemanager/models/results/AmountInputDialogResult.dart';
 import 'package:flutter/material.dart';
 
 import '../components/appBar/custom_app_bar.dart';
+import '../components/dialogs/amount_input_dialog.dart';
 import '../components/sideMenu/side_menu.dart';
+import '../helpers/database_helper.dart';
 import '../models/Plan.dart';
 
 class SavingPlansPage extends StatefulWidget {
@@ -13,105 +16,43 @@ class SavingPlansPage extends StatefulWidget {
 }
 
 class _SavingPlansPageState extends State<SavingPlansPage> {
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
   List<Plan> plans = [];
 
-  void _addPlan(
-      String type, int goalAmount, DateTime dateStart, DateTime dateEnd) {
+  void _addPlan(String type, int goalAmount, DateTime dateStart, DateTime dateEnd) async {
+    final planRepository = await _databaseHelper.planRepository();
+    final plan = Plan(type: type, goalAmount: goalAmount, dateStart: dateStart, dateEnd: dateEnd);
+    await planRepository.insertPlan(plan);
+    _loadPlans();
+  }
+
+  void _loadPlans() async {
+    final planRepository = await _databaseHelper.planRepository();
+    final loadedPlans = await planRepository.findAll();
     setState(() {
-      Plan plan = Plan(
-          type: type,
-          goalAmount: goalAmount,
-          dateStart: dateStart,
-          dateEnd: dateEnd);
-      plans.add(plan);
+      plans = loadedPlans;
     });
   }
 
-  void _updateCurrentAmount(Plan plan) async {
-    // Show a dialog to input the new amount
-    bool addCheck = true;
-    int? newAmount = await showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        int currentAmount = plan.currentAmount;
+  @override
+  void initState() {
+    super.initState();
+    _loadPlans();
+  }
 
-        return AlertDialog(
-          backgroundColor: const Color.fromRGBO(29, 31, 52, 1),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          title: const Text(
-            'Add Amount',
-            style: TextStyle(
-              fontSize: 24,
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Current Amount: $currentAmount',
-                  labelStyle: TextStyle(color: Colors.grey[350]),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey[350]!),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.tealAccent),
-                  ),
-                ),
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  // Validate input and update the currentAmount
-                  // You may want to add further validation based on your requirements
-                  currentAmount = int.tryParse(value) ?? currentAmount;
-                },
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(null); // Cancel
-              },
-              child: const Text('Cancel',
-                  style: TextStyle(color: Colors.tealAccent)),
-            ),
-            TextButton(
-              onPressed: () {
-                addCheck = false;
-                Navigator.of(context)
-                    .pop(currentAmount); // Confirm and return the new amount
-              },
-              child: const Text('Remove',
-                  style: TextStyle(color: Colors.tealAccent)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(currentAmount); // Confirm and return the new amount
-              },
-              child:
-                  const Text('Add', style: TextStyle(color: Colors.tealAccent)),
-            ),
-          ],
-        );
-      },
-    );
+
+  void _updateCurrentAmount(Plan plan, bool addCheck, int newAmount) async {
+    final planRepository = await _databaseHelper.planRepository();
+
     if (newAmount != null && addCheck) {
-      setState(() {
-        plan.currentAmount += newAmount;
-      });
+      await planRepository.updatePlanCurrentAmount(plan.id, newAmount);
     } else if (newAmount != null && !addCheck) {
       if (plan.currentAmount - newAmount < 0) {
         _showErrorAlert(context, 'Cannot remove more than the current amount.');
       }
-      setState(() {
-        plan.currentAmount -= newAmount;
-      });
+      await planRepository.updatePlanCurrentAmount(plan.id, -newAmount);
     }
+    _loadPlans();
   }
 
   void _showErrorAlert(BuildContext context, String message) {
@@ -169,7 +110,16 @@ class _SavingPlansPageState extends State<SavingPlansPage> {
           double progressValue =
               (plan.currentAmount / plan.goalAmount).clamp(0.0, 1.0);
           return GestureDetector(
-            onTap: () => _updateCurrentAmount(plan),
+            onTap: () async {
+              AmountInputDialogResult? result = await showDialog<AmountInputDialogResult>(
+              context: context,
+              builder: (BuildContext context) {
+              return AmountInputDialog(initialAmount: plan.currentAmount);
+            });
+              if(result!=null){
+                _updateCurrentAmount(plan, result.addPressed, result.currentAmount);
+              }
+            },
             child: Card(
               elevation: 4,
               shape: RoundedRectangleBorder(

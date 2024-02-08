@@ -1,15 +1,11 @@
 import 'package:sqflite/sqflite.dart';
 
-import '../models/Account.dart';
 import '../models/Plan.dart';
-import 'account_repository.dart';
 
 class PlanRepository {
   final Database _db;
 
-  final AccountRepository accountRepository;
-
-  PlanRepository(this._db, this.accountRepository);
+  PlanRepository(this._db);
 
   Future<void> insertPlan(Plan plan) async {
     await _db.insert(
@@ -26,12 +22,12 @@ class PlanRepository {
       whereArgs: [id],
     );
 
-    Account account = await accountRepository.findById(maps[0]['account_id']);
 
     return Plan.withId(
       id: maps[0]['id'],
       type: maps[0]['type'],
-      goalAmount: maps[0]['amount'],
+      goalAmount: maps[0]['goalAmount'],
+      currentAmount: maps[0]['currentAmount'],
       dateStart: DateTime.parse(maps[0]['dateStart']),
       dateEnd: DateTime.parse(maps[0]['dateEnd']),
     );
@@ -40,20 +36,21 @@ class PlanRepository {
   Future<List<Plan>> findAll() async {
     final List<Map<String, dynamic>> maps = await _db.query('Plan');
 
-    return List.generate(
-        maps.length,
-        (i) async {
-          Account account =
-              await accountRepository.findById(maps[i]['account_id']);
+    List<Plan> plans = [];
+    for (int i = 0; i < maps.length; i++) {
+      plans.add(
+        Plan.withId(
+          id: maps[i]['id'],
+          type: maps[i]['type'],
+          goalAmount: maps[i]['goalAmount'],
+          currentAmount: maps[i]['currentAmount'],
+          dateStart: DateTime.parse(maps[i]['dateStart']),
+          dateEnd: DateTime.parse(maps[i]['dateEnd']),
+        ),
+      );
+    }
 
-          return Plan.withId(
-            id: maps[i]['id'],
-            type: maps[i]['type'],
-            goalAmount: maps[i]['amount'],
-            dateStart: DateTime.parse(maps[i]['dateStart']),
-            dateEnd: DateTime.parse(maps[i]['dateEnd']),
-          );
-        } as Plan Function(int index));
+    return plans;
   }
 
   Future<void> updatePlan(Plan plan) async {
@@ -70,6 +67,13 @@ class PlanRepository {
       'Plan',
       where: 'id = ?',
       whereArgs: [id],
+    );
+  }
+
+  Future<void> updatePlanCurrentAmount(int id, int newCurrentAmount) async {
+    await _db.rawUpdate(
+      'UPDATE Plan SET currentAmount = currentAmount + ? WHERE id = ?',
+      [newCurrentAmount, id],
     );
   }
 }

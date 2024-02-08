@@ -19,6 +19,7 @@ class Plan {
       {required this.id,
       required this.type,
       required this.goalAmount,
+      required this.currentAmount,
       required this.dateStart,
       required this.dateEnd});
 
@@ -27,6 +28,7 @@ class Plan {
         id: json['id'],
         type: json['type'],
         goalAmount: json['goalAmount'],
+        currentAmount: json['currentAmount'],
         dateStart: DateTime.parse(json['dateStart']),
         dateEnd: DateTime.parse(json['dateEnd']));
   }
