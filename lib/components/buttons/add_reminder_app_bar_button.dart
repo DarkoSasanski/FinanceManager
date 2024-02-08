@@ -3,6 +3,8 @@ import 'package:financemanager/models/Category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../helpers/database_helper.dart';
+
 class AddReminderAppBarButton extends StatefulWidget {
   final String actionButtonText;
   final void Function(String title, int amount, DateTime date, bool isCompleted,
@@ -18,17 +20,14 @@ class AddReminderAppBarButton extends StatefulWidget {
 
 class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
   DateTime selectedDate = DateTime.now();
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
 
-  void _showAddIncomeDialog() {
+  Future<void> _showAddReminderDialog() async {
     String title = '';
     int amount = 0;
     Category? selectedCategory;
-
-    List<Category> availableCategories = [
-      Category(name: "Groceries", color: Colors.white, icon: Icons.cabin),
-      Category(name: "Utilities", color: Colors.white, icon: Icons.cabin),
-      Category(name: "Entertainment", color: Colors.white, icon: Icons.cabin),
-    ];
+    final categoryRepository = await _databaseHelper.categoryRepository();
+    List<Category> availableCategories = await categoryRepository.findAll();
 
     if (availableCategories.isNotEmpty) {
       selectedCategory = availableCategories[0];
@@ -94,7 +93,7 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
                       const SizedBox(height: 20),
                       DropdownButtonFormField<Category>(
                         decoration: InputDecoration(
-                          labelText: 'Account',
+                          labelText: 'Category',
                           labelStyle: TextStyle(color: Colors.grey[350]),
                           enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey[350]!),
@@ -147,7 +146,7 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
                             child: const Text('Cancel',
                                 style: TextStyle(color: Colors.white)),
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pop(null);
                             },
                           ),
                           TextButton(
@@ -192,7 +191,7 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
   Widget build(BuildContext context) {
     return CustomActionButton(
         actionButtonText: widget.actionButtonText,
-        actionButtonOnPressed: _showAddIncomeDialog,
+        actionButtonOnPressed: _showAddReminderDialog,
         gradientColors: const [
           Color(0xFF00B686),
           Color(0xFF008A60),

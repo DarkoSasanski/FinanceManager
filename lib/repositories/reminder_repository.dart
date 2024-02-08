@@ -45,21 +45,21 @@ class ReminderRepository {
   Future<List<Reminder>> findAll() async {
     final List<Map<String, dynamic>> maps = await _db.query('Reminder');
 
-    return List.generate(
-        maps.length,
-            (i) async {
+    List<Reminder> reminders = [];
+    for (int i = 0; i < maps.length; i++) {
               Category category =
               await categoryRepository.findById(maps[i]['category_id']);
 
-              return Reminder.withId(
-                id: maps[0]['id'],
-                title: maps[0]['title'],
-                amount: maps[0]['amount'],
-                date: DateTime.parse(maps[0]['date']),
-                isComplete: maps[0]['isComplete'],
-                category: category
+              reminders.add(Reminder.withId(
+                id: maps[i]['id'],
+                title: maps[i]['title'],
+                amount: maps[i]['amount'],
+                date: DateTime.parse(maps[i]['date']),
+                isComplete: maps[i]['isComplete']==1 ? true : false,
+                category: category)
           );
-        } as Reminder Function(int index));
+    }
+    return reminders;
   }
 
   Future<void> updateReminder(Reminder reminder) async {

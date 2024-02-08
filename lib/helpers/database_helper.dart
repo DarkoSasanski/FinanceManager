@@ -1,3 +1,4 @@
+import 'package:financemanager/repositories/reminder_repository.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -18,7 +19,7 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'finance_manager.db');
-    return await openDatabase(path, version: 1, onCreate: _createTable);
+    return await openDatabase(path, version: 2, onCreate: _createTable);
   }
 
   Future<AccountRepository> accountRepository() async {
@@ -42,7 +43,12 @@ class DatabaseHelper {
     return PlanRepository(await database);
   }
 
+  Future<ReminderRepository> reminderRepository() async{
+    return ReminderRepository(await database, await accountRepository(), await categoryRepository());
+  }
+
   Future<void> _createTable(Database db, int version) async {
+
     await db.execute('''
       CREATE TABLE IF NOT EXISTS Category (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -106,7 +112,7 @@ class DatabaseHelper {
           title VARCHAR(255) NOT NULL,
           amount INT NOT NULL,
           date DATETIME NOT NULL,
-          isCompleted BOOLEAN NOT NULL,
+          isComplete BOOLEAN NOT NULL,
           account_id INT,
           category_id INT,
           FOREIGN KEY (category_id) REFERENCES Category(id),

@@ -31,7 +31,7 @@ class Reminder {
         title: json['title'],
         amount: json['amount'],
         date: DateTime.parse(json['date']),
-        isComplete: json['isComplete'],
+        isComplete: json['isComplete']=='1' ? true:false,
         category: Category.fromJson(json['category']));
   }
 
@@ -40,7 +40,7 @@ class Reminder {
       'title': title,
       'amount': amount,
       'date': date.toIso8601String(),
-      'isComplete': isComplete,
+      'isComplete': isComplete ? 1 : 0,
       'category_id': category.id
     };
   }

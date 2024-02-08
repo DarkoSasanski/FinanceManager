@@ -66,4 +66,18 @@ class AccountRepository {
       whereArgs: [account.id],
     );
   }
+
+  Future<void> addAmount(int id, int addAmount) async {
+    await _db.rawUpdate(
+      'UPDATE Account SET amount = amount + ? WHERE id = ?',
+      [addAmount, id],
+    );
+  }
+
+  Future<void> removeAmount(int id, int removeAmount) async {
+    await _db.rawUpdate(
+      'UPDATE Account SET amount = amount - ? WHERE id = ?',
+      [removeAmount, id],
+    );
+  }
 }
