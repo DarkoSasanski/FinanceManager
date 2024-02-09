@@ -3,6 +3,7 @@ import 'package:financemanager/helpers/database_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../components/appBar/custom_app_bar.dart';
+import '../components/notifications/account_expense.dart';
 import '../components/sideMenu/side_menu.dart';
 import '../models/Account.dart';
 import '../models/Category.dart';
@@ -54,6 +55,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
    setState(() {
      expenses.add(expense);
    });
+   showAccountExpenseNotification(account.name, account.amount);
  }
   @override
   Widget build(BuildContext context) {

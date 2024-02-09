@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../components/appBar/custom_app_bar.dart';
 import '../components/buttons/add_income_app_bar_button.dart';
+import '../components/notifications/account_income.dart';
 import '../components/sideMenu/side_menu.dart';
 import '../models/Account.dart';
 import '../models/Income.dart';
@@ -51,6 +52,7 @@ class _IncomesPageState extends State<IncomesPage> {
     if (isReceived) {
       account.amount += amount;
       await accountRepository.updateAmount(account);
+      showAccountIncomeNotification(income.account.name,income.account.amount);
     }
     setState(() {
       incomes.add(income);
@@ -65,8 +67,8 @@ class _IncomesPageState extends State<IncomesPage> {
 
       income.account.amount += income.amount;
       await accountRepository.updateAccount(income.account);
-
       setState(() {});
+      showAccountIncomeNotification(income.account.name,income.account.amount);
     }
   }
 
