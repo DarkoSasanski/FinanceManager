@@ -139,84 +139,105 @@ class _StatisticsPageState extends State<StatisticsPage> {
         .map((entry) => FlSpot(entry.key.toDouble(), entry.value.toDouble()))
         .toList();
 
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          Expanded(
-            flex: 2,
-            child: LineChart(
-              LineChartData(
-                borderData: FlBorderData(show: true),
-                titlesData: FlTitlesData(
-                  show: true,
-                  rightTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      interval: 1,
-                      getTitlesWidget: bottomTitleWidgets,
-                    ),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      interval: 1,
-                      reservedSize: 42,
-                      getTitlesWidget: leftTitleWidgets,
-                    ),
-                  ),
-                ),
-                gridData: FlGridData(
-                  show: true,
-                  drawVerticalLine: true,
-                  horizontalInterval: 1,
-                  verticalInterval: 1,
-                ),
-                minX: mappingHelp.keys
-                    .reduce((min, key) => key < min ? key : min)
-                    .toDouble(),
-                maxX: mappingHelp.keys
-                    .reduce((max, key) => key > max ? key : max)
-                    .toDouble(),
-                minY: 0,
-                maxY: mappingHelp.values
-                    .reduce((max, value) => value > max ? value : max)
-                    .toDouble(),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: chartData,
-                    isCurved: true,
-                    gradient: LinearGradient(
-                      colors: gradientColors,
-                    ),
-                    barWidth: 5,
-                    isStrokeCapRound: true,
-                    dotData: FlDotData(
-                      show: false,
-                    ),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      gradient: LinearGradient(
-                        colors: gradientColors
-                            .map((color) => color.withOpacity(0.3))
-                            .toList(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+    return Stack(children: <Widget>[
+      AspectRatio(
+        aspectRatio: 1.70,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            right: 18,
+            left: 12,
+            top: 24,
+            bottom: 12,
+          ),
+          child: LineChart(
+            mainData(),
+          ),
+        ),
+      ),
+    ]);
+  }
+
+  LineChartData mainData() {
+    return LineChartData(
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        horizontalInterval: 1,
+        verticalInterval: 1,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: Colors.deepPurple,
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: Colors.deepPurpleAccent,
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 30,
+            interval: 1,
+            getTitlesWidget: bottomTitleWidgets,
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            interval: 1,
+            getTitlesWidget: leftTitleWidgets,
+            reservedSize: 42,
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: const Color(0xff37434d)),
+      ),
+      minX: mappingHelp.keys
+          .reduce((min, key) => key < min ? key : min)
+          .toDouble(),
+      maxX: mappingHelp.keys
+          .reduce((max, key) => key > max ? key : max)
+          .toDouble(),
+      minY: 0,
+      maxY: mappingHelp.values
+          .reduce((max, value) => value > max ? value : max)
+          .toDouble(),
+      lineBarsData: [
+        LineChartBarData(
+          spots: chartData,
+          isCurved: true,
+          gradient: LinearGradient(
+            colors: gradientColors,
+          ),
+          barWidth: 5,
+          isStrokeCapRound: true,
+          dotData: FlDotData(
+            show: false,
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+            gradient: LinearGradient(
+              colors: gradientColors
+                  .map((color) => color.withOpacity(0.3))
+                  .toList(),
             ),
           ),
-          const SizedBox(height: 16),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
