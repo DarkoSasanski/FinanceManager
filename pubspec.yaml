@@ -38,8 +38,7 @@ dependencies:
   fl_chart: ^0.55.2
   flutter_colorpicker: ^1.0.3
   sqflite: ^2.3.2
-  path: ^1.9.0
-  flutter_local_notifications: ^16.3.2
+  path: ^1.8.3
   flutter_local_notifications: ^9.2.0
 
 dev_dependencies:
