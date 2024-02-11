@@ -40,6 +40,7 @@ dependencies:
   sqflite: ^2.3.2
   path: ^1.9.0
   flutter_local_notifications: ^16.3.2
+  local_auth: ^2.1.8
 
 dev_dependencies:
   flutter_test:

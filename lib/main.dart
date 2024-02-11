@@ -1,12 +1,31 @@
+import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:financemanager/helpers/database_helper.dart';
 import 'package:financemanager/pages/dashboard.dart';
-import 'package:flutter/material.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseHelper databaseHelper = DatabaseHelper();
   await databaseHelper.database;
-  runApp(const MyApp());
+
+  if (await authenticateUser()) {
+    runApp(const MyApp());
+  } else {
+    runApp(const AuthenticationFailedApp());
+  }
+}
+
+Future<bool> authenticateUser() async {
+  final LocalAuthentication auth = LocalAuthentication();
+  try {
+    return await auth.authenticate(
+      localizedReason: 'Please authenticate to access the app',
+      options: const AuthenticationOptions(biometricOnly: true),
+    );
+  } catch (e) {
+    print("Authentication error: $e");
+    return false;
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -43,6 +62,21 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const Dashboard(),
+    );
+  }
+}
+
+class AuthenticationFailedApp extends StatelessWidget {
+  const AuthenticationFailedApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Text('Authentication failed. Please close and reopen the app to try again.'),
+        ),
+      ),
     );
   }
 }
