@@ -128,8 +128,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
     );
 
     String text = '\$$value';
-
-    return Text(text, style: style, textAlign: TextAlign.left);
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: Text(text, style: style, textAlign: TextAlign.left),
+    );
   }
 
   Widget _buildChart() {
