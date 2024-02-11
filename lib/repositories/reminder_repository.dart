@@ -14,8 +14,8 @@ class ReminderRepository {
 
   ReminderRepository(this._db, this.accountRepository, this.categoryRepository);
 
-  Future<void> insertReminder(Reminder reminder) async {
-    await _db.insert(
+  Future<int> insertReminder(Reminder reminder) async {
+    return await _db.insert(
       'Reminder',
       reminder.toJson(),
       conflictAlgorithm: ConflictAlgorithm.replace,

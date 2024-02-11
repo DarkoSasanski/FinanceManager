@@ -1,3 +1,4 @@
+import 'package:financemanager/components/notifications/reminder_notification.dart';
 import 'package:financemanager/models/Category.dart';
 import 'package:financemanager/models/Expense.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,8 @@ class _RemindersPageState extends State<RemindersPage> {
         isComplete: isCompleted,
         date: date,
         category: category!);
-    await reminderRepository.insertReminder(reminder);
+    int id = await reminderRepository.insertReminder(reminder);
+    scheduleReminderNotification(id, title, amount, date);
     _loadReminders();
   }
 
@@ -66,6 +68,7 @@ class _RemindersPageState extends State<RemindersPage> {
     if (confirmed) {
       final reminderRepository = await _databaseHelper.reminderRepository();
       await reminderRepository.deleteReminder(reminder.id);
+      cancelScheduledNotification(reminder.id+1);
       _loadReminders();
     }
   }
@@ -151,6 +154,7 @@ class _RemindersPageState extends State<RemindersPage> {
                   reminder.isComplete = true;
                   await accountRepository.updateAccount(reminder.account);
                   await reminderRepository.updateReminder(reminder);
+                  cancelScheduledNotification(reminder.id+1);
                   _loadReminders();
                   Navigator.of(context).pop(true);
                 } else {
