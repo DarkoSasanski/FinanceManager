@@ -39,7 +39,7 @@ dependencies:
   flutter_colorpicker: ^1.0.3
   sqflite: ^2.3.2
   path: ^1.9.0
-  flutter_local_notifications: ^16.3.2
+  flutter_local_notifications: ^9.2.0
 
 dev_dependencies:
   flutter_test:
