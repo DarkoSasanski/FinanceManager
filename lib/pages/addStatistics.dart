@@ -64,7 +64,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 16,
+      fontSize: 8,
+      color: Colors.white
     );
 
     int year = value ~/ 100;
@@ -122,17 +123,17 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
-      fontSize: 15,
+      fontSize: 8,
+      color: Colors.white
     );
 
-    String text = '\$$value K'; // Customize this based on your actual data
+    String text = '\$$value';
 
     return Text(text, style: style, textAlign: TextAlign.left);
   }
 
   Widget _buildChart() {
     if (expenses.isEmpty) {
-      // Display a loading indicator or placeholder if expenses are still loading
       return const Center(child: CircularProgressIndicator());
     }
     chartData = mappingHelp.entries
