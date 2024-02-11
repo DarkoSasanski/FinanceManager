@@ -1,9 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../components/appBar/custom_app_bar.dart';
-import '../components/sideMenu/side_menu.dart';
 import '../helpers/database_helper.dart';
 import '../models/Expense.dart';
 
@@ -110,7 +107,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         text = Text('$year - DEC', style: style);
         break;
       default:
-        text = Text('', style: style);
+        text = const Text('', style: style);
         break;
     }
 
@@ -134,7 +131,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   Widget _buildChart() {
     if (expenses.isEmpty) {
       // Display a loading indicator or placeholder if expenses are still loading
-      return Center(child: CircularProgressIndicator());
+      return const Center(child: CircularProgressIndicator());
     }
     setState(() {
       chartData = mappingHelp.entries
@@ -217,7 +214,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
               ),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
         ],
       ),
     );
@@ -228,18 +225,18 @@ class _StatisticsPageState extends State<StatisticsPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(16, 19, 37, 1),
-        title: Text(
+        title: const Text(
           "Statistics",
-          style: const TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.white),
         ),
       ), // Drawer, Body, etc.
       body: FutureBuilder<List<Expense>>(
         future: _loadAllExpenses(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error loading data'));
+            return const Center(child: Text('Error loading data'));
           } else {
             // Data is ready, build the chart
             return _buildChart();
