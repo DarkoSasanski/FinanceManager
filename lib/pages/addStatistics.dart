@@ -165,8 +165,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
       gridData: FlGridData(
         show: true,
         drawVerticalLine: true,
-        horizontalInterval: 1,
-        verticalInterval: 1,
         getDrawingHorizontalLine: (value) {
           return FlLine(
             color: Colors.deepPurple,
@@ -199,7 +197,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            interval: 1,
             getTitlesWidget: leftTitleWidgets,
             reservedSize: 42,
           ),
