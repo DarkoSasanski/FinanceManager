@@ -15,40 +15,46 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.appBarButton,
   }) : super(key: key);
 
+  List<Widget>? actions() {
+    if (actionButtonText != null && actionButtonOnPressed != null) {
+      return [Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: CustomActionButton(
+            actionButtonText: actionButtonText!,
+            actionButtonOnPressed: actionButtonOnPressed!,
+            gradientColors: const [
+              Color(0xFF00B686),
+              Color(0xFF008A60),
+              Color(0xff00573a),
+            ],
+          ))
+      ];
+    } else if (appBarButton != null) {
+      return [Padding(
+        padding: const EdgeInsets.only(right: 8.0),
+        child: appBarButton!,
+      )
+      ];
+    } else {
+      return [const SizedBox()];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color.fromRGBO(16, 19, 37, 1),
-      leading: IconButton(
-        icon: const Icon(Icons.notes, color: Colors.grey, size: 35),
-        onPressed: () {
-          Scaffold.of(context).openDrawer();
-        },
-      ),
-      title: Text(
-        title,
-        style: const TextStyle(color: Colors.white),
-      ),
-      actions: actionButtonText != null && actionButtonOnPressed != null
-          ? [
-              Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: CustomActionButton(
-                    actionButtonText: actionButtonText!,
-                    actionButtonOnPressed: actionButtonOnPressed!,
-                    gradientColors: const [
-                      Color(0xFF00B686),
-                      Color(0xFF008A60),
-                      Color(0xff00573a),
-                    ],
-                  )),
-            ]
-          : [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: appBarButton!,
-              ),
-            ],
+        backgroundColor: const Color.fromRGBO(16, 19, 37, 1),
+        leading: IconButton(
+          icon: const Icon(Icons.notes, color: Colors.grey, size: 35),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(color: Colors.white),
+        ),
+        actions: actions()
     );
   }
 

@@ -3,6 +3,7 @@ import 'package:financemanager/pages/addCategory.dart';
 import 'package:financemanager/pages/addExpense.dart';
 import 'package:financemanager/pages/addIncome.dart';
 import 'package:financemanager/pages/addSavingPlans.dart';
+import 'package:financemanager/pages/addStatistics.dart';
 import 'package:financemanager/pages/dashboard.dart';
 import 'package:flutter/material.dart';
 
@@ -85,7 +86,9 @@ class SideMenu extends StatelessWidget {
             title: const Text('Statistics',
                 style: TextStyle(color: Colors.grey, fontSize: 25)),
             onTap: () {
-              // Handle item 2 tap
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const StatisticsPage(),
+              ));
             },
           ),
           const Divider(

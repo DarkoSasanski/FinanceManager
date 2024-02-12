@@ -1,6 +1,10 @@
+import 'dart:io' as io;
+
 import 'package:financemanager/helpers/database_helper.dart';
 import 'package:financemanager/pages/dashboard.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +18,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    checkAndRequestPermission();
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -44,5 +50,32 @@ class MyApp extends StatelessWidget {
       ),
       home: const Dashboard(),
     );
+  }
+
+  void checkAndRequestPermission() async {
+    if (await hasExactAlarmPermission()) {
+      // Permission is already granted
+      if (kDebugMode) {
+        print("Exact alarm permission is granted.");
+      }
+    } else {
+      // Permission is not granted, request it
+      await requestExactAlarmPermission();
+    }
+  }
+
+  Future<bool> hasExactAlarmPermission() async {
+    if (io.Platform.isAndroid) {
+      if (await Permission.scheduleExactAlarm.isGranted) {
+        return true;
+      }
+    }
+    return false; // On non-Android platforms, assume the permission is granted
+  }
+
+  Future<void> requestExactAlarmPermission() async {
+    if (io.Platform.isAndroid) {
+      await Permission.scheduleExactAlarm.request();
+    }
   }
 }
