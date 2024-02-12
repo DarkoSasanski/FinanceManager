@@ -70,6 +70,14 @@ class ReminderRepository {
       whereArgs: [reminder.id],
     );
   }
+  Future<void> setAccount(Account account, int id) async {
+    await _db.update(
+      'Reminder',
+      {'account_id': account.id},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 
   Future<void> deleteReminder(int id) async {
     await _db.delete(

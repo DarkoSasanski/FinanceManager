@@ -19,7 +19,11 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'finance_manager.db');
-    return await openDatabase(path, version: 2, onCreate: _createTable);
+    return await openDatabase(path, version: 2, onCreate: _createTable,
+        onOpen: (db) async {
+      await db.execute('PRAGMA foreign_keys = ON');
+    },);
+
   }
 
   Future<AccountRepository> accountRepository() async {
@@ -77,7 +81,7 @@ class DatabaseHelper {
           date DATETIME NOT NULL,
           account_id INT,
           category_id INT,
-          FOREIGN KEY (account_id) REFERENCES Account(id),
+          FOREIGN KEY (account_id) REFERENCES Account(id) ON DELETE CASCADE,
           FOREIGN KEY (category_id) REFERENCES Category(id)
       );
       ''');
@@ -91,7 +95,7 @@ class DatabaseHelper {
           date DATETIME NOT NULL,
           account_id INT,
           isReceived BOOLEAN NOT NULL,
-          FOREIGN KEY (account_id) REFERENCES Account(id)
+          FOREIGN KEY (account_id) REFERENCES Account(id) ON DELETE CASCADE
       );
       ''');
 
@@ -116,7 +120,7 @@ class DatabaseHelper {
           account_id INT,
           category_id INT,
           FOREIGN KEY (category_id) REFERENCES Category(id),
-          FOREIGN KEY (account_id) REFERENCES Account(id)
+          FOREIGN KEY (account_id) REFERENCES Account(id) ON DELETE CASCADE
       );
     ''');
   }

@@ -154,6 +154,7 @@ class _RemindersPageState extends State<RemindersPage> {
                   reminder.isComplete = true;
                   await accountRepository.updateAccount(reminder.account);
                   await reminderRepository.updateReminder(reminder);
+                  await reminderRepository.setAccount(selectedAccount!, reminder.id);
                   cancelScheduledNotification(reminder.id+1);
                   _loadReminders();
                   Navigator.of(context).pop(true);
