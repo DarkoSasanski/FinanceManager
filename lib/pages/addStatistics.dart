@@ -63,10 +63,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 8,
-      color: Colors.white
-    );
+        fontWeight: FontWeight.bold, fontSize: 8, color: Colors.white);
 
     int year = value ~/ 100;
     int month = (value % 100).toInt();
@@ -122,10 +119,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 8,
-      color: Colors.white
-    );
+        fontWeight: FontWeight.bold, fontSize: 8, color: Colors.white);
 
     String text = '\$$value';
     return SideTitleWidget(
