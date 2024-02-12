@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
+import '../../models/Category.dart';
 import '../../models/Month.dart';
 import 'dashboard_pie_chart.dart';
 
 class DashboardPieChartSlider extends StatefulWidget {
   final int selectedMonth;
   final void Function(int) onMonthChanged;
+  final Map<Category, String> categoryExpenses;
 
   const DashboardPieChartSlider(
-      {super.key, required this.selectedMonth, required this.onMonthChanged});
+      {super.key,
+      required this.selectedMonth,
+      required this.onMonthChanged,
+      required this.categoryExpenses});
 
   @override
   _DashboardPieChartSliderState createState() =>
@@ -76,7 +81,9 @@ class _DashboardPieChartSliderState extends State<DashboardPieChartSlider> {
                   controller: _pageController,
                   itemCount: months.length,
                   itemBuilder: (context, index) {
-                    return DashboardPieChart(month: months[index].name);
+                    return DashboardPieChart(
+                        month: months[index].name,
+                        categoryExpenses: index + 1 == widget.selectedMonth ? widget.categoryExpenses : {});
                   },
                 ),
               ),

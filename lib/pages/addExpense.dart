@@ -57,6 +57,7 @@ class _ExpensesPageState extends State<ExpensesPage> {
    });
    showAccountExpenseNotification(account.name, account.amount);
  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

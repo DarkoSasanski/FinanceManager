@@ -1,10 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/Category.dart';
+
 class DashboardPieChart extends StatelessWidget {
   final String month;
+  final Map<Category, String> categoryExpenses;
 
-  const DashboardPieChart({super.key, required this.month});
+  const DashboardPieChart(
+      {super.key, required this.month, required this.categoryExpenses});
 
   @override
   Widget build(BuildContext context) {
@@ -38,48 +42,18 @@ class DashboardPieChart extends StatelessWidget {
                   ],
                 ),
                 child: PieChart(PieChartData(
-                  sections: [
-                    PieChartSectionData(
-                      color: const Color.fromRGBO(42, 195, 139, 1),
-                      value: 20,
-                      showTitle: false,
-                      badgeWidget: Icon(
-                        Icons.checkroom_outlined,
-                        color: Colors.white.withOpacity(0.4),
-                      ),
-                      radius: radius,
-                    ),
-                    PieChartSectionData(
-                      color: const Color.fromRGBO(27, 114, 130, 1),
-                      value: 40,
-                      showTitle: false,
-                      badgeWidget: Icon(
-                        Icons.drive_eta_outlined,
-                        color: Colors.white.withOpacity(0.4),
-                      ),
-                      radius: radius,
-                    ),
-                    PieChartSectionData(
-                      color: const Color.fromRGBO(195, 105, 83, 1),
-                      value: 30,
-                      showTitle: false,
-                      badgeWidget: Icon(
-                        Icons.flatware,
-                        color: Colors.white.withOpacity(0.4),
-                      ),
-                      radius: radius,
-                    ),
-                    PieChartSectionData(
-                      color: const Color.fromRGBO(90, 50, 127, 1),
-                      value: 10,
-                      showTitle: false,
-                      badgeWidget: Icon(
-                        Icons.home_outlined,
-                        color: Colors.white.withOpacity(0.4),
-                      ),
-                      radius: radius,
-                    ),
-                  ],
+                  sections: categoryExpenses.entries
+                      .map((entry) => PieChartSectionData(
+                            color: entry.key.color,
+                            value: double.parse(entry.value),
+                            showTitle: false,
+                            badgeWidget: Icon(
+                              entry.key.icon,
+                              color: Colors.white.withOpacity(0.4),
+                            ),
+                            radius: radius,
+                          ))
+                      .toList(),
                   centerSpaceRadius: 0,
                   sectionsSpace: 0,
                 ))))

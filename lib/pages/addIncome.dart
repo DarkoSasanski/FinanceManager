@@ -33,6 +33,7 @@ class _IncomesPageState extends State<IncomesPage> {
       incomes = loadedIncomes;
     });
   }
+
   void _addIncome(String source, String description, int amount,
       bool isReceived, DateTime date, Account? account) async {
     if (account == null) return;
@@ -58,6 +59,7 @@ class _IncomesPageState extends State<IncomesPage> {
       incomes.add(income);
     });
   }
+
   void _markAsReceived(Income income) async {
     final incomeRepository = await _databaseHelper.incomeRepository();
     final accountRepository = await _databaseHelper.accountRepository();
@@ -71,7 +73,6 @@ class _IncomesPageState extends State<IncomesPage> {
       showAccountIncomeNotification(income.account.name,income.account.amount);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

@@ -70,4 +70,29 @@ class CategoryRepository {
       whereArgs: [id],
     );
   }
+
+  Future<Map<Category, String>> fetchCategoryExpensesByMonthAndAccount(
+      int month, int? accountId) async {
+    final List<Map<String, dynamic>> maps = [];
+
+    if (accountId == null) {
+      maps.addAll(await _db.rawQuery(
+        'SELECT category_id, SUM(amount) as total FROM Expense WHERE ltrim(strftime(\'%m\', date), \'0\') = ? GROUP BY category_id',
+        [month.toString()],
+      ));
+    } else {
+      maps.addAll(await _db.rawQuery(
+        'SELECT category_id, SUM(amount) as total FROM Expense WHERE ltrim(strftime(\'%m\', date), \'0\') = ? AND account_id = ? GROUP BY category_id',
+        [month.toString(), accountId.toString()],
+      ));
+    }
+
+    Map<Category, String> categoryExpenses = {};
+    for (var map in maps) {
+      Category category = await findById(map['category_id']);
+      categoryExpenses[category] = map['total'].toString();
+    }
+
+    return categoryExpenses;
+  }
 }
