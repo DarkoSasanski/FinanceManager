@@ -25,6 +25,7 @@ class _AddIncomeAppBarButtonState extends State<AddIncomeAppBarButton> {
     String description = '';
     int amount = 0;
     bool isReceived = true;
+    selectedDate = DateTime.now();
     Account? selectedAccount;
     final DatabaseHelper _databaseHelper = DatabaseHelper();
     final accountRepository = await _databaseHelper.accountRepository();

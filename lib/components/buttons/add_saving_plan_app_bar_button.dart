@@ -22,6 +22,9 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
     String type = '';
     int goalAmount = 0;
 
+    startDate = DateTime.now();
+    endDate = DateTime.now();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {

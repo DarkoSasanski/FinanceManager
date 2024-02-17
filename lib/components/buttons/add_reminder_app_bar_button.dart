@@ -33,6 +33,8 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
       selectedCategory = availableCategories[0];
     }
 
+    selectedDate = DateTime.now();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {

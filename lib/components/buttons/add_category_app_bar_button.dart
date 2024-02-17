@@ -55,6 +55,9 @@ class _AddCategoryAppBarButtonState extends State<AddCategoryAppBarButton> {
 
   void _showAddCategoryDialog() {
     String categoryName = '';
+    currentColor = Colors.blue;
+    currentIcon = Icons.home;
+
 
     showDialog(
       context: context,

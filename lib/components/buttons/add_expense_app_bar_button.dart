@@ -39,6 +39,8 @@ class _AddExpenseAppBarButtonState extends State<AddExpenseAppBarButton> {
       selectedCategory = availableCategories[0];
     }
 
+    selectedDate = DateTime.now();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
