@@ -162,5 +162,3 @@ class _IncomesPageState extends State<IncomesPage> {
     );
   }
 }
-
-void main() => runApp(const MaterialApp(home: IncomesPage()));

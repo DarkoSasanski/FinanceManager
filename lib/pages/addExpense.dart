@@ -126,5 +126,3 @@ class _ExpensesPageState extends State<ExpensesPage> {
     );
   }
 }
-
-void main() => runApp(const MaterialApp(home: ExpensesPage()));

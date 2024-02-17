@@ -1,9 +1,11 @@
 import 'package:financemanager/components/buttons/add_account_app_bar_button.dart';
+import 'package:financemanager/models/results/TransferFundsDialogResult.dart';
 import 'package:flutter/material.dart';
 
 import '../components/appBar/custom_app_bar.dart';
 import '../components/dialogs/delete_account_dialog.dart';
 import '../components/dialogs/edit_account_dialog.dart';
+import '../components/dialogs/transfer_funds_dialog.dart';
 import '../components/sideMenu/side_menu.dart';
 import '../helpers/database_helper.dart';
 import '../models/Account.dart';
@@ -40,6 +42,18 @@ class _AccountsPageState extends State<AccountsPage> {
     loadAccounts();
   }
 
+  void transferFunds(double amount, Account? from, Account? to) async {
+    if (from == null || to == null) {
+      return;
+    }
+    final accountRepository = await _databaseHelper.accountRepository();
+    from.amount -= amount.toInt();
+    to.amount += amount.toInt();
+    await accountRepository.updateAmount(from);
+    await accountRepository.updateAmount(to);
+    loadAccounts();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,6 +64,31 @@ class _AccountsPageState extends State<AccountsPage> {
             actionButtonText: 'Add Account',
           )),
       drawer: const SideMenu(),
+      persistentFooterAlignment: AlignmentDirectional.centerStart,
+      persistentFooterButtons: [
+        TextButton(
+          onPressed: () async {
+            TransferFundsDialogResult? result =
+                await showDialog<TransferFundsDialogResult>(
+              context: context,
+              builder: (BuildContext context) {
+                return TransferFundsDialog();
+              },
+            );
+            if (result != null) {
+              transferFunds(result.amountToTransfer, result.selectedAccountFrom,
+                  result.selectedAccountTo);
+            }
+          },
+          style: TextButton.styleFrom(
+              backgroundColor: const Color.fromRGBO(167, 94, 212, 1),
+              maximumSize: const Size.fromWidth(180)),
+          child: const Row(children: [
+            Icon(Icons.swap_horiz, color: Colors.white),
+            Text('Transfer funds', style: TextStyle(color: Colors.white)),
+          ]),
+        ),
+      ],
       body: ListView.builder(
         itemCount: accounts.length,
         itemBuilder: (context, index) {
@@ -71,10 +110,12 @@ class _AccountsPageState extends State<AccountsPage> {
                   ),
                   DeleteAccountButton(
                     account: account,
-                    onDeletionCompleted: loadAccounts, // Assuming loadAccounts is your method to refresh the accounts list
+                    onDeletionCompleted:
+                        loadAccounts, // Assuming loadAccounts is your method to refresh the accounts list
                   ),
-                  SizedBox(width: 8), // Provides spacing between the icons
-                  Icon(Icons.credit_card, color: Colors.white70),
+                  const SizedBox(width: 8),
+                  // Provides spacing between the icons
+                  const Icon(Icons.credit_card, color: Colors.white70),
                 ],
               ),
             ),
