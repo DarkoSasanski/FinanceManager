@@ -1,5 +1,6 @@
 import 'package:financemanager/components/buttons/custom_action_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AddSavingPlanAppBarButton extends StatefulWidget {
   final String actionButtonText;
@@ -74,6 +75,10 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
                             borderSide: BorderSide(color: Colors.tealAccent),
                           ),
                         ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
                       ),
                       const SizedBox(height: 20),
                       ListTile(
