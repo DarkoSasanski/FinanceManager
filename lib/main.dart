@@ -2,15 +2,33 @@ import 'dart:io' as io;
 
 import 'package:financemanager/helpers/database_helper.dart';
 import 'package:financemanager/pages/dashboard.dart';
+import 'package:financemanager/repositories/category_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'models/Category.dart' as category;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseHelper databaseHelper = DatabaseHelper();
   await databaseHelper.database;
+  setUpDefaultCategories(databaseHelper);
   runApp(const MyApp());
+}
+
+Future<void> setUpDefaultCategories(DatabaseHelper databaseHelper) async {
+  CategoryRepository categoryRepository =
+      await databaseHelper.categoryRepository();
+
+  if (!await categoryRepository
+      .doesCategoryExist(category.Category.TRANSFER_CATEGORY_NAME)) {
+    await categoryRepository.insertCategory(category.Category(
+      name: category.Category.TRANSFER_CATEGORY_NAME,
+      color: Colors.yellow,
+      icon: Icons.swap_horiz,
+    ));
+  }
 }
 
 class MyApp extends StatelessWidget {

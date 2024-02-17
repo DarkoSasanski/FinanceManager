@@ -19,11 +19,14 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'finance_manager.db');
-    return await openDatabase(path, version: 2, onCreate: _createTable,
-        onOpen: (db) async {
-      await db.execute('PRAGMA foreign_keys = ON');
-    },);
-
+    return await openDatabase(
+      path,
+      version: 2,
+      onCreate: _createTable,
+      onOpen: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON');
+      },
+    );
   }
 
   Future<AccountRepository> accountRepository() async {
@@ -47,12 +50,12 @@ class DatabaseHelper {
     return PlanRepository(await database);
   }
 
-  Future<ReminderRepository> reminderRepository() async{
-    return ReminderRepository(await database, await accountRepository(), await categoryRepository());
+  Future<ReminderRepository> reminderRepository() async {
+    return ReminderRepository(
+        await database, await accountRepository(), await categoryRepository());
   }
 
   Future<void> _createTable(Database db, int version) async {
-
     await db.execute('''
       CREATE TABLE IF NOT EXISTS Category (
           id INTEGER PRIMARY KEY AUTOINCREMENT,

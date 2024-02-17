@@ -1,4 +1,5 @@
 import 'package:financemanager/components/buttons/add_account_app_bar_button.dart';
+import 'package:financemanager/models/Category.dart';
 import 'package:financemanager/models/results/TransferFundsDialogResult.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,8 @@ import '../components/dialogs/transfer_funds_dialog.dart';
 import '../components/sideMenu/side_menu.dart';
 import '../helpers/database_helper.dart';
 import '../models/Account.dart';
+import '../models/Expense.dart';
+import '../models/Income.dart';
 
 class AccountsPage extends StatefulWidget {
   const AccountsPage({super.key});
@@ -46,12 +49,45 @@ class _AccountsPageState extends State<AccountsPage> {
     if (from == null || to == null) {
       return;
     }
+
     final accountRepository = await _databaseHelper.accountRepository();
+
     from.amount -= amount.toInt();
     to.amount += amount.toInt();
+
     await accountRepository.updateAmount(from);
     await accountRepository.updateAmount(to);
+
     loadAccounts();
+
+    final incomeRepository = await _databaseHelper.incomeRepository();
+    final categoryRepository = await _databaseHelper.categoryRepository();
+    final expenseRepository = await _databaseHelper.expenseRepository();
+
+    await incomeRepository.insertIncome(
+      Income(
+        source: 'Transfer',
+        description: 'Transfer from ${from.name} to ${to.name}',
+        amount: amount.toInt(),
+        date: DateTime.now(),
+        account: to,
+        isReceived: true,
+      ),
+    );
+
+    if (await categoryRepository
+        .doesCategoryExist(Category.TRANSFER_CATEGORY_NAME)) {
+      await expenseRepository.insertExpense(
+        Expense(
+          description: 'Transfer',
+          amount: amount.toInt(),
+          date: DateTime.now(),
+          account: from,
+          category: await categoryRepository
+              .getCategoryByName(Category.TRANSFER_CATEGORY_NAME),
+        ),
+      );
+    }
   }
 
   @override

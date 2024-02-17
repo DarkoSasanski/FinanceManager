@@ -103,4 +103,34 @@ class CategoryRepository {
 
     return categoryExpenses;
   }
+
+  Future<bool> doesCategoryExist(String name) async {
+    final List<Map<String, dynamic>> maps = await _db.query(
+      'Category',
+      where: 'name = ?',
+      whereArgs: [name],
+    );
+
+    return maps.isNotEmpty;
+  }
+
+  Future<Category> getCategoryByName(String name) async {
+    final List<Map<String, dynamic>> maps = await _db.query(
+      'Category',
+      where: 'name = ?',
+      whereArgs: [name],
+    );
+
+    return Category.withId(
+      id: maps[0]['id'],
+      name: maps[0]['name'],
+      color: Color(maps[0]['color']),
+      icon: IconData(
+        maps[0]['codePoint'],
+        fontFamily: maps[0]['fontFamily'],
+        fontPackage: maps[0]['fontPackage'],
+        matchTextDirection: maps[0]['matchTextDirection'] == 1,
+      ),
+    );
+  }
 }

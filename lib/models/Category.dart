@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'Expense.dart';
 
 class Category {
+  static const String TRANSFER_CATEGORY_NAME = "Transfer Funds";
+
   int id = 0;
   String name;
   Color color;
