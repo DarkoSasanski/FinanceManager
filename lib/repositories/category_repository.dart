@@ -77,12 +77,20 @@ class CategoryRepository {
 
     if (accountId == null) {
       maps.addAll(await _db.rawQuery(
-        'SELECT category_id, SUM(amount) as total FROM Expense WHERE ltrim(strftime(\'%m\', date), \'0\') = ? GROUP BY category_id',
+        'SELECT category_id, SUM(amount) as total '
+        'FROM Expense '
+        'WHERE ltrim(strftime(\'%m\', date), \'0\') = ? '
+        'AND strftime(\'%Y\', date) = strftime(\'%Y\', \'now\') '
+        'GROUP BY category_id',
         [month.toString()],
       ));
     } else {
       maps.addAll(await _db.rawQuery(
-        'SELECT category_id, SUM(amount) as total FROM Expense WHERE ltrim(strftime(\'%m\', date), \'0\') = ? AND account_id = ? GROUP BY category_id',
+        'SELECT category_id, SUM(amount) as total '
+        'FROM Expense WHERE ltrim(strftime(\'%m\', date), \'0\') = ? '
+        'AND strftime(\'%Y\', date) = strftime(\'%Y\', \'now\') '
+        'AND account_id = ? '
+        'GROUP BY category_id',
         [month.toString(), accountId.toString()],
       ));
     }

@@ -21,8 +21,13 @@ class DashboardPieChartSlider extends StatefulWidget {
 }
 
 class _DashboardPieChartSliderState extends State<DashboardPieChartSlider> {
-  final PageController _pageController = PageController();
-  bool _isFirstBuild = true;
+  late final PageController _pageController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: widget.selectedMonth - 1);
+  }
 
   @override
   void dispose() {
@@ -32,13 +37,6 @@ class _DashboardPieChartSliderState extends State<DashboardPieChartSlider> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isFirstBuild) {
-      _pageController.animateToPage(widget.selectedMonth - 1,
-          duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
-    } else {
-      _isFirstBuild = false;
-    }
-
     return SizedBox(
         height: 350,
         child: Row(
@@ -83,7 +81,9 @@ class _DashboardPieChartSliderState extends State<DashboardPieChartSlider> {
                   itemBuilder: (context, index) {
                     return DashboardPieChart(
                         month: months[index].name,
-                        categoryExpenses: index + 1 == widget.selectedMonth ? widget.categoryExpenses : {});
+                        categoryExpenses: index + 1 == widget.selectedMonth
+                            ? widget.categoryExpenses
+                            : {});
                   },
                 ),
               ),

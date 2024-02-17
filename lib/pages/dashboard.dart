@@ -23,7 +23,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
-  int _selectedMonth = 1;
+  int _selectedMonth = DateTime.now().month;
   Map<Category, String> categoryExpenses = {};
   List<Account> accounts = [];
   int? _selectedAccount;
