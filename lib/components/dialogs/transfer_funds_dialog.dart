@@ -17,6 +17,7 @@ class _TransferFundsDialogState extends State<TransferFundsDialog> {
   late double amountToTransfer;
   Account? selectedAccountFrom;
   Account? selectedAccountTo;
+  final _formKey = GlobalKey<FormState>();
 
   void loadAccounts() async {
     final accountRepository = await _databaseHelper.accountRepository();
@@ -69,62 +70,86 @@ class _TransferFundsDialogState extends State<TransferFundsDialog> {
       content: StatefulBuilder(
         builder: (BuildContext context, StateSetter setDialogState) {
           return SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                DropdownButtonFormField<Account>(
-                  value: selectedAccountFrom,
-                  decoration: _inputDecoration("From"),
-                  dropdownColor: const Color.fromRGBO(29, 31, 52, 1),
-                  icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
-                  onChanged: (Account? newValue) {
-                    setDialogState(() {
-                      selectedAccountFrom = newValue!;
-                    });
-                  },
-                  items: getDropdownOptionsForFrom()
-                      .map<DropdownMenuItem<Account>>((Account value) {
-                    return DropdownMenuItem<Account>(
-                      value: value,
-                      child: Text(value.name,
-                          style: const TextStyle(color: Colors.white)),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 20),
-                DropdownButtonFormField<Account>(
-                  value: selectedAccountTo,
-                  decoration: _inputDecoration("To"),
-                  dropdownColor: const Color.fromRGBO(29, 31, 52, 1),
-                  icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
-                  items: getDropdownOptionsForTo()
-                      .map<DropdownMenuItem<Account>>((Account value) {
-                    return DropdownMenuItem<Account>(
-                      value: value,
-                      child: Text(value.name,
-                          style: const TextStyle(color: Colors.white)),
-                    );
-                  }).toList(),
-                  onChanged: (Account? newValue) {
-                    setDialogState(() {
-                      selectedAccountTo = newValue!;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  style: const TextStyle(color: Colors.white),
-                  decoration: _inputDecoration('Amount'),
-                  keyboardType: TextInputType.number,
-                  onChanged: (String value) {
-                    setDialogState(() {
-                      amountToTransfer = double.parse(value);
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-              ],
-            ),
+            child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    DropdownButtonFormField<Account>(
+                      value: selectedAccountFrom,
+                      decoration: _inputDecoration("From"),
+                      dropdownColor: const Color.fromRGBO(29, 31, 52, 1),
+                      icon:
+                          const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                      onChanged: (Account? newValue) {
+                        setDialogState(() {
+                          selectedAccountFrom = newValue!;
+                        });
+                      },
+                      items: getDropdownOptionsForFrom()
+                          .map<DropdownMenuItem<Account>>((Account value) {
+                        return DropdownMenuItem<Account>(
+                          value: value,
+                          child: Text(value.name,
+                              style: const TextStyle(color: Colors.white)),
+                        );
+                      }).toList(),
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Please select an account';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    DropdownButtonFormField<Account>(
+                      value: selectedAccountTo,
+                      decoration: _inputDecoration("To"),
+                      dropdownColor: const Color.fromRGBO(29, 31, 52, 1),
+                      icon:
+                          const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                      items: getDropdownOptionsForTo()
+                          .map<DropdownMenuItem<Account>>((Account value) {
+                        return DropdownMenuItem<Account>(
+                          value: value,
+                          child: Text(value.name,
+                              style: const TextStyle(color: Colors.white)),
+                        );
+                      }).toList(),
+                      onChanged: (Account? newValue) {
+                        setDialogState(() {
+                          selectedAccountTo = newValue!;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null) {
+                          return 'Please select an account';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      style: const TextStyle(color: Colors.white),
+                      decoration: _inputDecoration('Amount'),
+                      keyboardType: TextInputType.number,
+                      onChanged: (String value) {
+                        setDialogState(() {
+                          amountToTransfer = double.parse(value);
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            double.parse(value) <= 0) {
+                          return 'Please enter a valid amount';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                )),
           );
         },
       ),
@@ -147,10 +172,12 @@ class _TransferFundsDialogState extends State<TransferFundsDialog> {
         ),
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(TransferFundsDialogResult(
-                selectedAccountFrom: selectedAccountFrom,
-                selectedAccountTo: selectedAccountTo,
-                amountToTransfer: amountToTransfer));
+            if (_formKey.currentState!.validate()) {
+              Navigator.of(context).pop(TransferFundsDialogResult(
+                  selectedAccountFrom: selectedAccountFrom,
+                  selectedAccountTo: selectedAccountTo,
+                  amountToTransfer: amountToTransfer));
+            }
           },
           child: const Text('Transfer',
               style: TextStyle(color: Colors.tealAccent)),

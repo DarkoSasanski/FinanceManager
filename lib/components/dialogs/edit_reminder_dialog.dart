@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -34,6 +33,7 @@ class _EditReminderDialogState extends State<EditReminderDialog> {
   late Category selectedCategory;
   final DatabaseHelper _databaseHelper = DatabaseHelper();
   List<Category> categories = [];
+  final _formKey = GlobalKey<FormState>();
 
   void _loadCategories() async {
     final categoryRepository = await _databaseHelper.categoryRepository();
@@ -54,7 +54,8 @@ class _EditReminderDialogState extends State<EditReminderDialog> {
     _loadCategories();
   }
 
-  Future<void> _selectDate(BuildContext context, Function setDialogState) async {
+  Future<void> _selectDate(
+      BuildContext context, Function setDialogState) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: date,
@@ -74,131 +75,159 @@ class _EditReminderDialogState extends State<EditReminderDialog> {
       backgroundColor: const Color.fromRGBO(29, 31, 52, 1),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: StatefulBuilder(
-            builder: (context, setDialogState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'Edit Reminder',
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    onChanged: (value) => title = value,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: 'Title',
-                      labelStyle: TextStyle(color: Colors.grey[350]),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey[350]!),
+        child: Form(
+            key: _formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: StatefulBuilder(
+                builder: (context, setDialogState) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'Edit Reminder',
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.tealAccent),
-                      ),
-                    ),
-                    initialValue: widget.title,
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    onChanged: (value) => amount = int.tryParse(value) ?? 0,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      labelText: 'Amount',
-                      labelStyle: TextStyle(color: Colors.grey[350]),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey[350]!),
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.tealAccent),
-                      ),
-                    ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    initialValue: widget.amount.toString(),
-                  ),
-                  const SizedBox(height: 20),
-                  DropdownButtonFormField<Category>(
-                    decoration: InputDecoration(
-                      labelText: 'Category',
-                      labelStyle: TextStyle(color: Colors.grey[350]),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey[350]!),
-                      ),
-                    ),
-                    dropdownColor: const Color.fromRGBO(29, 31, 52, 1),
-                    value: categories[0],
-                    icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
-                    items: categories
-                        .map<DropdownMenuItem<Category>>((Category category) {
-                      return DropdownMenuItem<Category>(
-                        value: category,
-                        child: Text(
-                          category.name,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        onChanged: (value) => title = value,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: 'Title',
+                          labelStyle: TextStyle(color: Colors.grey[350]),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey[350]!),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.tealAccent),
                           ),
                         ),
-                      );
-                    }).toList(),
-                    onChanged: (Category? newValue) {
-                      setDialogState(() {
-                        selectedCategory = newValue!;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20),
-                  ListTile(
-                    title: const Text('Date', style: TextStyle(color: Colors.white)),
-                    trailing: GestureDetector(
-                      onTap: () => _selectDate(context, setDialogState),
-                      child: Text(
-                        '${date.day}/${date.month}/${date.year}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
+                        initialValue: widget.title,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a title';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        onChanged: (value) => amount = int.tryParse(value) ?? 0,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: 'Amount',
+                          labelStyle: TextStyle(color: Colors.grey[350]),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey[350]!),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.tealAccent),
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        initialValue: widget.amount.toString(),
+                        validator: (value) {
+                          if (value == null ||
+                              value.isEmpty ||
+                              int.tryParse(value)! <= 0) {
+                            return 'Please enter a valid amount';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      DropdownButtonFormField<Category>(
+                        decoration: InputDecoration(
+                          labelText: 'Category',
+                          labelStyle: TextStyle(color: Colors.grey[350]),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey[350]!),
+                          ),
+                        ),
+                        dropdownColor: const Color.fromRGBO(29, 31, 52, 1),
+                        value: categories[0],
+                        icon: const Icon(Icons.arrow_drop_down,
+                            color: Colors.grey),
+                        items: categories.map<DropdownMenuItem<Category>>(
+                            (Category category) {
+                          return DropdownMenuItem<Category>(
+                            value: category,
+                            child: Text(
+                              category.name,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (Category? newValue) {
+                          setDialogState(() {
+                            selectedCategory = newValue!;
+                          });
+                        },
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Please select a category';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      ListTile(
+                        title: const Text('Date',
+                            style: TextStyle(color: Colors.white)),
+                        trailing: GestureDetector(
+                          onTap: () => _selectDate(context, setDialogState),
+                          child: Text(
+                            '${date.day}/${date.month}/${date.year}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        child: const Text('Cancel', style: TextStyle(color: Colors.white)),
-                        onPressed: () {
-                          Navigator.of(context).pop(null);
-                        },
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          if (title.isNotEmpty && amount > 0) {
-                            Navigator.of(context).pop(Reminder(
-                              title: title,
-                              amount: amount,
-                              date: date,
-                              isComplete: isComplete,
-                              category: selectedCategory,
-                            ));
-                          }
-                        },
-                        child: const Text('Save', style: TextStyle(color: Colors.tealAccent)),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            child: const Text('Cancel',
+                                style: TextStyle(color: Colors.white)),
+                            onPressed: () {
+                              Navigator.of(context).pop(null);
+                            },
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                Navigator.of(context).pop(Reminder(
+                                  title: title,
+                                  amount: amount,
+                                  date: date,
+                                  isComplete: isComplete,
+                                  category: selectedCategory,
+                                ));
+                              }
+                            },
+                            child: const Text('Save',
+                                style: TextStyle(color: Colors.tealAccent)),
+                          ),
+                        ],
                       ),
                     ],
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
+                  );
+                },
+              ),
+            )),
       ),
     );
   }

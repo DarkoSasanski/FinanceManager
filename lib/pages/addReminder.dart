@@ -138,7 +138,7 @@ class _RemindersPageState extends State<RemindersPage> {
                 Navigator.of(context).pop(null); // Cancel
               },
               child: const Text('Cancel',
-                  style: TextStyle(color: Colors.tealAccent)),
+                  style: TextStyle(color: Colors.white)),
             ),
             TextButton(
               onPressed: () async {
