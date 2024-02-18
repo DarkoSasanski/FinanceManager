@@ -57,7 +57,7 @@ class _AmountInputDialogState extends State<AmountInputDialog> {
       backgroundColor: const Color.fromRGBO(29, 31, 52, 1),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       title: const Text(
-        'Add Amount',
+        'Update Saving Plan',
         style: TextStyle(
           fontSize: 24,
           color: Colors.white,

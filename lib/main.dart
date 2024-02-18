@@ -29,6 +29,15 @@ Future<void> setUpDefaultCategories(DatabaseHelper databaseHelper) async {
       icon: Icons.swap_horiz,
     ));
   }
+
+  if (!await categoryRepository
+      .doesCategoryExist(category.Category.SAVING_PLANS_CATEGORY_NAME)) {
+    await categoryRepository.insertCategory(category.Category(
+      name: category.Category.SAVING_PLANS_CATEGORY_NAME,
+      color: const Color.fromRGBO(0, 145, 95, 1.0),
+      icon: Icons.savings_outlined,
+    ));
+  }
 }
 
 class MyApp extends StatelessWidget {

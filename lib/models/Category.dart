@@ -4,6 +4,7 @@ import 'Expense.dart';
 
 class Category {
   static const String TRANSFER_CATEGORY_NAME = "Transfer Funds";
+  static const String SAVING_PLANS_CATEGORY_NAME = "Saving Plans";
 
   int id = 0;
   String name;

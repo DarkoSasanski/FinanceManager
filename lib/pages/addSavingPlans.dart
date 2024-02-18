@@ -1,5 +1,6 @@
 import 'package:financemanager/components/buttons/add_saving_plan_app_bar_button.dart';
 import 'package:financemanager/components/dialogs/edit_saving_plan_dialog.dart';
+import 'package:financemanager/models/Category.dart';
 import 'package:financemanager/models/results/AmountInputDialogResult.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,8 @@ import '../components/dialogs/delete_confirmation_dialog.dart';
 import '../components/sideMenu/side_menu.dart';
 import '../helpers/database_helper.dart';
 import '../models/Account.dart';
+import '../models/Expense.dart';
+import '../models/Income.dart';
 import '../models/Plan.dart';
 
 class SavingPlansPage extends StatefulWidget {
@@ -22,9 +25,14 @@ class _SavingPlansPageState extends State<SavingPlansPage> {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
   List<Plan> plans = [];
 
-  void _addPlan(String type, int goalAmount, DateTime dateStart, DateTime dateEnd) async {
+  void _addPlan(
+      String type, int goalAmount, DateTime dateStart, DateTime dateEnd) async {
     final planRepository = await _databaseHelper.planRepository();
-    final plan = Plan(type: type, goalAmount: goalAmount, dateStart: dateStart, dateEnd: dateEnd);
+    final plan = Plan(
+        type: type,
+        goalAmount: goalAmount,
+        dateStart: dateStart,
+        dateEnd: dateEnd);
     await planRepository.insertPlan(plan);
     _loadPlans();
   }
@@ -37,11 +45,12 @@ class _SavingPlansPageState extends State<SavingPlansPage> {
 
   void _deletePlan(Plan plan) async {
     bool confirmed = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return DeleteConfirmationDialog();
-      },
-    ) ?? false;
+          context: context,
+          builder: (BuildContext context) {
+            return DeleteConfirmationDialog();
+          },
+        ) ??
+        false;
 
     if (confirmed) {
       final planRepository = await _databaseHelper.planRepository();
@@ -64,23 +73,52 @@ class _SavingPlansPageState extends State<SavingPlansPage> {
     _loadPlans();
   }
 
-
-  void _updateCurrentAmount(Plan plan, bool addCheck, int newAmount, Account? account) async {
+  void _updateCurrentAmount(
+      Plan plan, bool addCheck, int newAmount, Account? account) async {
     final planRepository = await _databaseHelper.planRepository();
     final accountRepository = await _databaseHelper.accountRepository();
+    final expenseRepository = await _databaseHelper.expenseRepository();
+    final incomeRepository = await _databaseHelper.incomeRepository();
+    final categoryRepository = await _databaseHelper.categoryRepository();
 
     if (newAmount != null && addCheck) {
       await planRepository.updatePlanCurrentAmount(plan.id, newAmount);
-      if(account != null) {
+      if (account != null) {
         accountRepository.removeAmount(account.id, newAmount);
+
+        if (await categoryRepository
+            .doesCategoryExist(Category.SAVING_PLANS_CATEGORY_NAME)) {
+          final category = await categoryRepository
+              .getCategoryByName(Category.SAVING_PLANS_CATEGORY_NAME);
+          await expenseRepository.insertExpense(
+            Expense(
+              description: 'Saving Plan: ${plan.type}',
+              amount: newAmount,
+              date: DateTime.now(),
+              category: category,
+              account: account,
+            ),
+          );
+        }
       }
-    }else if (newAmount != null && !addCheck) {
+    } else if (newAmount != null && !addCheck) {
       if (plan.currentAmount - newAmount < 0) {
         _showErrorAlert(context, 'Cannot remove more than the current amount.');
       }
       await planRepository.updatePlanCurrentAmount(plan.id, -newAmount);
-      if(account != null) {
+      if (account != null) {
         accountRepository.addAmount(account.id, newAmount);
+
+        await incomeRepository.insertIncome(
+          Income(
+            source: 'Saving Plan: ${plan.type}',
+            description: 'Refund from Saving Plan',
+            amount: newAmount,
+            date: DateTime.now(),
+            account: account,
+            isReceived: true,
+          ),
+        );
       }
     }
 
@@ -140,17 +178,19 @@ class _SavingPlansPageState extends State<SavingPlansPage> {
         itemBuilder: (context, index) {
           final plan = plans[index];
           double progressValue =
-          (plan.currentAmount / plan.goalAmount).clamp(0.0, 1.0);
+              (plan.currentAmount / plan.goalAmount).clamp(0.0, 1.0);
           return GestureDetector(
             onTap: () async {
-              AmountInputDialogResult? result = await showDialog<AmountInputDialogResult>(
+              AmountInputDialogResult? result =
+                  await showDialog<AmountInputDialogResult>(
                 context: context,
                 builder: (BuildContext context) {
                   return AmountInputDialog(initialAmount: plan.currentAmount);
                 },
               );
               if (result != null) {
-                _updateCurrentAmount(plan, result.addPressed, result.currentAmount, result.account);
+                _updateCurrentAmount(plan, result.addPressed,
+                    result.currentAmount, result.account);
               }
             },
             child: Card(
@@ -197,8 +237,8 @@ class _SavingPlansPageState extends State<SavingPlansPage> {
                           LinearProgressIndicator(
                             value: progressValue,
                             backgroundColor: Colors.grey[300],
-                            valueColor:
-                            const AlwaysStoppedAnimation<Color>(Colors.blue),
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                                Colors.blue),
                           ),
                           const SizedBox(height: 8),
                           Text(
@@ -222,17 +262,22 @@ class _SavingPlansPageState extends State<SavingPlansPage> {
                           icon: Icon(Icons.edit, color: Colors.white),
                           onPressed: () async {
                             Plan? resultPlan = await showDialog<Plan>(
-                            context: context,
-                            builder: (BuildContext context) {
-                            return EditSavingPlanDialog(type: plan.type, goalAmount: plan.goalAmount,startDate: plan.dateStart, endDate: plan.dateEnd,);
-                            },
-                          );
-                            if(resultPlan!=null){
+                              context: context,
+                              builder: (BuildContext context) {
+                                return EditSavingPlanDialog(
+                                  type: plan.type,
+                                  goalAmount: plan.goalAmount,
+                                  startDate: plan.dateStart,
+                                  endDate: plan.dateEnd,
+                                );
+                              },
+                            );
+                            if (resultPlan != null) {
                               resultPlan.id = plan.id;
                               resultPlan.currentAmount = plan.currentAmount;
                               _editPlan(resultPlan);
                             }
-                        },
+                          },
                         ),
                         IconButton(
                           icon: Icon(Icons.delete, color: Colors.white),
