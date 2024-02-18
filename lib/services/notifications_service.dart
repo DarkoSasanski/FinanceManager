@@ -16,7 +16,7 @@ class NotificationService {
 
   void initNotification() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/transparent_icon');
     final InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
