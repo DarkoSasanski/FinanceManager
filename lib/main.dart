@@ -25,7 +25,7 @@ Future<void> setUpDefaultCategories(DatabaseHelper databaseHelper) async {
       .doesCategoryExist(category.Category.TRANSFER_CATEGORY_NAME)) {
     await categoryRepository.insertCategory(category.Category(
       name: category.Category.TRANSFER_CATEGORY_NAME,
-      color: Colors.yellow,
+      color: const Color.fromRGBO(224, 221, 36, 1),
       icon: Icons.swap_horiz,
     ));
   }
@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
     checkAndRequestPermission();
 
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Finance Manager',
       theme: ThemeData(
         primaryColor: const Color.fromRGBO(16, 19, 37, 1),
         hintColor: Colors.tealAccent[400],
