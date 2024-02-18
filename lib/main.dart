@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
 import 'dart:io' as io;
 
 import 'package:financemanager/helpers/database_helper.dart';
@@ -15,6 +17,25 @@ Future<void> main() async {
   await databaseHelper.database;
   setUpDefaultCategories(databaseHelper);
   runApp(const MyApp());
+
+  if (await authenticateUser()) {
+    runApp(const MyApp());
+  } else {
+    runApp(const AuthenticationFailedApp());
+  }
+}
+
+Future<bool> authenticateUser() async {
+  final LocalAuthentication auth = LocalAuthentication();
+  try {
+    return await auth.authenticate(
+      localizedReason: 'Please authenticate to access the app',
+      options: const AuthenticationOptions(biometricOnly: true),
+    );
+  } catch (e) {
+    print("Authentication error: $e");
+    return false;
+  }
 }
 
 Future<void> setUpDefaultCategories(DatabaseHelper databaseHelper) async {
@@ -95,5 +116,20 @@ class MyApp extends StatelessWidget {
     if (io.Platform.isAndroid) {
       await Permission.scheduleExactAlarm.request();
     }
+  }
+}
+
+class AuthenticationFailedApp extends StatelessWidget {
+  const AuthenticationFailedApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Text('Authentication failed. Please close and reopen the app to try again.'),
+        ),
+      ),
+    );
   }
 }
