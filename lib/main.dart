@@ -1,6 +1,7 @@
 import 'dart:io' as io;
 
 import 'package:financemanager/helpers/database_helper.dart';
+import 'package:financemanager/pages/authenticationFailedPage.dart';
 import 'package:financemanager/pages/dashboard.dart';
 import 'package:financemanager/repositories/category_repository.dart';
 import 'package:flutter/foundation.dart';
@@ -20,7 +21,7 @@ Future<void> main() async {
   if (await authenticateUser()) {
     runApp(const MyApp());
   } else {
-    runApp(const AuthenticationFailedApp());
+    runApp(const AuthenticationFailedPage());
   }
 }
 
@@ -32,7 +33,9 @@ Future<bool> authenticateUser() async {
       options: const AuthenticationOptions(biometricOnly: true),
     );
   } catch (e) {
-    print("Authentication error: $e");
+    if (kDebugMode) {
+      print("Authentication error: $e");
+    }
     return false;
   }
 }
@@ -124,20 +127,5 @@ class MyApp extends StatelessWidget {
     if (io.Platform.isAndroid) {
       await Permission.scheduleExactAlarm.request();
     }
-  }
-}
-
-class AuthenticationFailedApp extends StatelessWidget {
-  const AuthenticationFailedApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Authentication failed. Please close and reopen the app to try again.'),
-        ),
-      ),
-    );
   }
 }
