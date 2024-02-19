@@ -3,6 +3,7 @@ import 'dart:io' as io;
 import 'package:financemanager/helpers/database_helper.dart';
 import 'package:financemanager/pages/authenticationFailedPage.dart';
 import 'package:financemanager/pages/dashboard.dart';
+import 'package:financemanager/pages/deviceIsNotSupportedPage.dart';
 import 'package:financemanager/repositories/category_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +19,15 @@ Future<void> main() async {
   setUpDefaultCategories(databaseHelper);
   runApp(const MyApp());
 
-  if (await authenticateUser()) {
-    runApp(const MyApp());
-  } else {
-    runApp(const AuthenticationFailedPage());
+  if (!await isDeviceSupported()) {
+    runApp(const DeviceIsNotSupportedPage());
+  }
+  else {
+    if (await authenticateUser()) {
+      runApp(const MyApp());
+    } else {
+      runApp(const AuthenticationFailedPage());
+    }
   }
 }
 
@@ -38,6 +44,11 @@ Future<bool> authenticateUser() async {
     }
     return false;
   }
+}
+
+Future<bool> isDeviceSupported() async {
+  final LocalAuthentication auth = LocalAuthentication();
+  return await auth.isDeviceSupported();
 }
 
 Future<void> setUpDefaultCategories(DatabaseHelper databaseHelper) async {
