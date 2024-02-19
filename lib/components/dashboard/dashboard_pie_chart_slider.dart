@@ -22,6 +22,7 @@ class DashboardPieChartSlider extends StatefulWidget {
 
 class _DashboardPieChartSliderState extends State<DashboardPieChartSlider> {
   late final PageController _pageController;
+  bool _isFirstBuild = true;
 
   @override
   void initState() {
@@ -37,6 +38,13 @@ class _DashboardPieChartSliderState extends State<DashboardPieChartSlider> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_isFirstBuild) {
+      _pageController.animateToPage(widget.selectedMonth - 1,
+          duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+    } else {
+      _isFirstBuild = false;
+    }
+
     return SizedBox(
         height: 350,
         child: Row(
