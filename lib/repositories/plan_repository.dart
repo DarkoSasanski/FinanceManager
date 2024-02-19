@@ -22,7 +22,6 @@ class PlanRepository {
       whereArgs: [id],
     );
 
-
     return Plan.withId(
       id: maps[0]['id'],
       type: maps[0]['type'],
@@ -75,5 +74,36 @@ class PlanRepository {
       'UPDATE Plan SET currentAmount = currentAmount + ? WHERE id = ?',
       [newCurrentAmount, id],
     );
+  }
+
+  Future<List<Plan>> findPlansByStatus(String status) async {
+    if (status == 'All') {
+      return findAll();
+    }
+
+    String condition = status == 'Completed'
+        ? 'goalAmount <= currentAmount'
+        : 'goalAmount > currentAmount';
+
+    final List<Map<String, dynamic>> maps = await _db.query(
+      'Plan',
+      where: condition,
+    );
+
+    List<Plan> plans = [];
+    for (int i = 0; i < maps.length; i++) {
+      plans.add(
+        Plan.withId(
+          id: maps[i]['id'],
+          type: maps[i]['type'],
+          goalAmount: maps[i]['goalAmount'],
+          currentAmount: maps[i]['currentAmount'],
+          dateStart: DateTime.parse(maps[i]['dateStart']),
+          dateEnd: DateTime.parse(maps[i]['dateEnd']),
+        ),
+      );
+    }
+
+    return plans;
   }
 }

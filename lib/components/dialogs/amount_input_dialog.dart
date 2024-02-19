@@ -72,7 +72,7 @@ class _AmountInputDialogState extends State<AmountInputDialog> {
             TextFormField(
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
-                labelText: 'Current Amount: $initialAmount',
+                labelText: 'Current Amount: $initialAmount\$',
                 labelStyle: TextStyle(color: Colors.grey[350]),
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.grey[350]!),

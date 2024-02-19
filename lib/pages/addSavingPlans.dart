@@ -24,6 +24,7 @@ class SavingPlansPage extends StatefulWidget {
 class _SavingPlansPageState extends State<SavingPlansPage> {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
   List<Plan> plans = [];
+  String dropdownValue = 'All';
 
   void _addPlan(
       String type, int goalAmount, DateTime dateStart, DateTime dateEnd) async {
@@ -61,7 +62,7 @@ class _SavingPlansPageState extends State<SavingPlansPage> {
 
   void _loadPlans() async {
     final planRepository = await _databaseHelper.planRepository();
-    final loadedPlans = await planRepository.findAll();
+    final loadedPlans = await planRepository.findPlansByStatus(dropdownValue);
     setState(() {
       plans = loadedPlans;
     });
@@ -172,127 +173,160 @@ class _SavingPlansPageState extends State<SavingPlansPage> {
         ),
       ),
       drawer: const SideMenu(),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: plans.length,
-        itemBuilder: (context, index) {
-          final plan = plans[index];
-          double progressValue =
-              (plan.currentAmount / plan.goalAmount).clamp(0.0, 1.0);
-          return GestureDetector(
-            onTap: () async {
-              AmountInputDialogResult? result =
-                  await showDialog<AmountInputDialogResult>(
-                context: context,
-                builder: (BuildContext context) {
-                  return AmountInputDialog(initialAmount: plan.currentAmount);
-                },
-              );
-              if (result != null) {
-                _updateCurrentAmount(plan, result.addPressed,
-                    result.currentAmount, result.account);
-              }
-            },
-            child: Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          const Color(0xFF2DB684).withOpacity(0.8),
-                          const Color(0xFF101325).withOpacity(0.8),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            plan.type,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '${plan.dateStart.day}/${plan.dateStart.month}/${plan.dateStart.year} - ${plan.dateEnd.day}/${plan.dateEnd.month}/${plan.dateEnd.year}',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[300],
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          LinearProgressIndicator(
-                            value: progressValue,
-                            backgroundColor: Colors.grey[300],
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                                Colors.blue),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Savings Progress: ${(progressValue * 100).toStringAsFixed(1)}%",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.grey[300],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit, color: Colors.white),
-                          onPressed: () async {
-                            Plan? resultPlan = await showDialog<Plan>(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return EditSavingPlanDialog(
-                                  type: plan.type,
-                                  goalAmount: plan.goalAmount,
-                                  startDate: plan.dateStart,
-                                  endDate: plan.dateEnd,
-                                );
-                              },
-                            );
-                            if (resultPlan != null) {
-                              resultPlan.id = plan.id;
-                              resultPlan.currentAmount = plan.currentAmount;
-                              _editPlan(resultPlan);
-                            }
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete, color: Colors.white),
-                          onPressed: () {
-                            _deletePlan(plan);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+      body: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              DropdownButton(
+                padding: const EdgeInsets.only(right: 16),
+                value: dropdownValue,
+                icon: const Icon(Icons.keyboard_arrow_down),
+                underline: Container(),
+                items: const [
+                  DropdownMenuItem(value: 'All', child: Text('All')),
+                  DropdownMenuItem(
+                      value: 'Completed', child: Text('Completed')),
+                  DropdownMenuItem(
+                      value: 'Not Completed', child: Text('Not Completed')),
                 ],
+                onChanged: (value) => {
+                  setState(() {
+                    dropdownValue = value.toString();
+                    _loadPlans();
+                  })
+                },
+                hint: const Text('Month',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.normal)),
               ),
-            ),
-          );
-        },
+            ],
+          ),
+          Expanded(
+              child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: plans.length,
+            itemBuilder: (context, index) {
+              final plan = plans[index];
+              double progressValue =
+                  (plan.currentAmount / plan.goalAmount).clamp(0.0, 1.0);
+              return GestureDetector(
+                onTap: () async {
+                  AmountInputDialogResult? result =
+                      await showDialog<AmountInputDialogResult>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AmountInputDialog(
+                          initialAmount: plan.currentAmount);
+                    },
+                  );
+                  if (result != null) {
+                    _updateCurrentAmount(plan, result.addPressed,
+                        result.currentAmount, result.account);
+                  }
+                },
+                child: Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              const Color(0xFF2DB684).withOpacity(0.8),
+                              const Color(0xFF101325).withOpacity(0.8),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                plan.type,
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '${plan.dateStart.day}/${plan.dateStart.month}/${plan.dateStart.year} - ${plan.dateEnd.day}/${plan.dateEnd.month}/${plan.dateEnd.year}',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey[300],
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              LinearProgressIndicator(
+                                value: progressValue,
+                                backgroundColor: Colors.grey[300],
+                                valueColor: const AlwaysStoppedAnimation<Color>(
+                                    Colors.blue),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "Savings Progress: ${(progressValue * 100).toStringAsFixed(1)}% (${plan.currentAmount}\$/${plan.goalAmount}\$)",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey[300],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.edit, color: Colors.white),
+                              onPressed: () async {
+                                Plan? resultPlan = await showDialog<Plan>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return EditSavingPlanDialog(
+                                      type: plan.type,
+                                      goalAmount: plan.goalAmount,
+                                      startDate: plan.dateStart,
+                                      endDate: plan.dateEnd,
+                                    );
+                                  },
+                                );
+                                if (resultPlan != null) {
+                                  resultPlan.id = plan.id;
+                                  resultPlan.currentAmount = plan.currentAmount;
+                                  _editPlan(resultPlan);
+                                }
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete, color: Colors.white),
+                              onPressed: () {
+                                _deletePlan(plan);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ))
+        ],
       ),
     );
   }
