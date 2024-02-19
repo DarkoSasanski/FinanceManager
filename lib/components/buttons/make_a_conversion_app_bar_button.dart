@@ -62,8 +62,10 @@ class _MakeAConversionAppBarButtonState
   }
 
   void _showMakeAConversionDialog() {
-    String fromCurrency = 'USD';
-    String toCurrency = 'EUR';
+    String? fromCurrency =
+        widget.currencies.isNotEmpty ? widget.currencies[0] : null;
+    String? toCurrency =
+        widget.currencies.isNotEmpty ? widget.currencies[0] : null;
 
     setState(() {
       amount = 0;
@@ -81,131 +83,140 @@ class _MakeAConversionAppBarButtonState
                   borderRadius: BorderRadius.circular(12)),
               child: Form(
                 key: _formKey,
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text(
-                        'Make a Conversion',
-                        style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                child: StatefulBuilder(
+                  builder: (context, setDialogState) {
+                    return SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Text(
+                              'Make a Conversion',
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            DropdownButtonFormField<String>(
+                              value: fromCurrency,
+                              icon: const Icon(Icons.arrow_downward,
+                                  color: Colors.white),
+                              iconSize: 24,
+                              elevation: 16,
+                              decoration: _inputDecoration('From'),
+                              onChanged: (String? newValue) {
+                                setDialogState(() {
+                                  fromCurrency = newValue!;
+                                });
+                              },
+                              items: widget.currencies
+                                  .map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please select a currency';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            DropdownButtonFormField<String>(
+                              value: toCurrency,
+                              icon: const Icon(Icons.arrow_downward,
+                                  color: Colors.white),
+                              iconSize: 24,
+                              elevation: 16,
+                              decoration: _inputDecoration('To'),
+                              onChanged: (String? newValue) {
+                                setDialogState(() {
+                                  toCurrency = newValue!;
+                                });
+                              },
+                              items: widget.currencies
+                                  .map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please select a currency';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              style: const TextStyle(color: Colors.white),
+                              decoration: _inputDecoration('Amount'),
+                              keyboardType: TextInputType.number,
+                              onChanged: (value) {
+                                setDialogState(() {
+                                  amount = double.parse(value);
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    double.parse(value) < 0) {
+                                  return 'Please enter a valid amount';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 30),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  child: const Text('Cancel',
+                                      style: TextStyle(color: Colors.white)),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                const SizedBox(width: 8),
+                                TextButton(
+                                  child: const Text('Convert',
+                                      style:
+                                          TextStyle(color: Colors.tealAccent)),
+                                  onPressed: () {
+                                    if (_formKey.currentState!.validate()) {
+                                      makeAConversion(fromCurrency!,
+                                          toCurrency!, setDialogState);
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 30),
+                            Row(
+                              children: [
+                                Text(
+                                  'Result: $result $toCurrency',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 30),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      DropdownButtonFormField<String>(
-                        value: fromCurrency,
-                        icon: const Icon(Icons.arrow_downward,
-                            color: Colors.white),
-                        iconSize: 24,
-                        elevation: 16,
-                        decoration: _inputDecoration('From'),
-                        onChanged: (String? newValue) {
-                          setDialogState(() {
-                            fromCurrency = newValue!;
-                          });
-                        },
-                        items: widget.currencies
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select a currency';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      DropdownButtonFormField<String>(
-                        value: toCurrency,
-                        icon: const Icon(Icons.arrow_downward,
-                            color: Colors.white),
-                        iconSize: 24,
-                        elevation: 16,
-                        decoration: _inputDecoration('To'),
-                        onChanged: (String? newValue) {
-                          setDialogState(() {
-                            toCurrency = newValue!;
-                          });
-                        },
-                        items: widget.currencies
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please select a currency';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        style: const TextStyle(color: Colors.white),
-                        decoration: _inputDecoration('Amount'),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          setDialogState(() {
-                            amount = double.parse(value);
-                          });
-                        },
-                        validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              double.parse(value) < 0) {
-                            return 'Please enter a valid amount';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            child: const Text('Cancel',
-                                style: TextStyle(color: Colors.white)),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          const SizedBox(width: 8),
-                          TextButton(
-                            child: const Text('Convert',
-                                style: TextStyle(color: Colors.tealAccent)),
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                makeAConversion(
-                                    fromCurrency, toCurrency, setDialogState);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 30),
-                      Row(
-                        children: [
-                          Text(
-                            'Result: $result $toCurrency',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 30),
-                    ],
-                  ),
+                    );
+                  },
                 ),
               ),
             );
