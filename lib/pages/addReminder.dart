@@ -22,10 +22,46 @@ class RemindersPage extends StatefulWidget {
 class _RemindersPageState extends State<RemindersPage> {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
   List<Reminder> reminders = [];
+  DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
+  DateTime endDate = DateTime.now();
+  String dropdownFilter = 'All';
+
+  void _selectStartDate(BuildContext context) async {
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: startDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+
+    if (pickedDate != null && pickedDate != startDate) {
+      setState(() {
+        startDate = pickedDate;
+      });
+      _loadReminders();
+    }
+  }
+
+  void _selectEndDate(BuildContext context) async {
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: endDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+
+    if (pickedDate != null && pickedDate != endDate) {
+      setState(() {
+        endDate = pickedDate;
+      });
+      _loadReminders();
+    }
+  }
 
   void _loadReminders() async {
     final reminderRepository = await _databaseHelper.reminderRepository();
-    final loadedReminders = await reminderRepository.findAll();
+    final loadedReminders = await reminderRepository.findByFilter(
+        dropdownFilter, startDate, endDate);
     setState(() {
       reminders = loadedReminders;
     });
@@ -59,16 +95,17 @@ class _RemindersPageState extends State<RemindersPage> {
 
   void _deleteReminder(Reminder reminder) async {
     bool confirmed = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return DeleteConfirmationDialog();
-      },
-    ) ?? false;
+          context: context,
+          builder: (BuildContext context) {
+            return DeleteConfirmationDialog();
+          },
+        ) ??
+        false;
 
     if (confirmed) {
       final reminderRepository = await _databaseHelper.reminderRepository();
       await reminderRepository.deleteReminder(reminder.id);
-      cancelScheduledNotification(reminder.id+1);
+      cancelScheduledNotification(reminder.id + 1);
       _loadReminders();
     }
   }
@@ -137,8 +174,8 @@ class _RemindersPageState extends State<RemindersPage> {
               onPressed: () {
                 Navigator.of(context).pop(null); // Cancel
               },
-              child: const Text('Cancel',
-                  style: TextStyle(color: Colors.white)),
+              child:
+                  const Text('Cancel', style: TextStyle(color: Colors.white)),
             ),
             TextButton(
               onPressed: () async {
@@ -154,8 +191,9 @@ class _RemindersPageState extends State<RemindersPage> {
                   reminder.isComplete = true;
                   await accountRepository.updateAccount(reminder.account);
                   await reminderRepository.updateReminder(reminder);
-                  await reminderRepository.setAccount(selectedAccount!, reminder.id);
-                  cancelScheduledNotification(reminder.id+1);
+                  await reminderRepository.setAccount(
+                      selectedAccount!, reminder.id);
+                  cancelScheduledNotification(reminder.id + 1);
                   _loadReminders();
                   Navigator.of(context).pop(true);
                 } else {
@@ -222,109 +260,179 @@ class _RemindersPageState extends State<RemindersPage> {
         ),
       ),
       drawer: const SideMenu(),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: reminders.length,
-        itemBuilder: (context, index) {
-          final reminder = reminders[index];
-          return Card(
-              elevation: 4,
-              color: reminder.isComplete ? Colors.green : Colors.red,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Stack(children: [
-                Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        reminder.title,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Reminder set for date: ${reminder.date.day}/${reminder.date.month}/${reminder.date.year}',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.grey[300],
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
+      body: Column(
+        children: [
+          Row(
+            children: [
+              DropdownButton(
+                  padding: const EdgeInsets.only(left: 16),
+                  value: dropdownFilter,
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'All',
+                      child: Text('All'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Completed',
+                      child: Text('Completed'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Not Completed',
+                      child: Text('Not Completed'),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      dropdownFilter = value.toString();
+                      _loadReminders();
+                    });
+                  }),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(
+                  child: ListTile(
+                title: const Text('Start Date',
+                    style: TextStyle(color: Colors.white)),
+                trailing: GestureDetector(
+                  onTap: () => _selectStartDate(context),
+                  child: Text(
+                    '${startDate.day}/${startDate.month}/${startDate.year}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              )),
+              Expanded(
+                  child: ListTile(
+                title: const Text('End Date',
+                    style: TextStyle(color: Colors.white)),
+                trailing: GestureDetector(
+                  onTap: () => _selectEndDate(context),
+                  child: Text(
+                    '${endDate.day}/${endDate.month}/${endDate.year}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              )),
+            ],
+          ),
+          Expanded(
+              child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: reminders.length,
+            itemBuilder: (context, index) {
+              final reminder = reminders[index];
+              return Card(
+                  elevation: 4,
+                  color: reminder.isComplete ? Colors.green : Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Stack(children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
                           Text(
-                            '\$${reminder.amount}',
+                            reminder.title,
                             style: const TextStyle(
-                              fontSize: 20,
+                              fontSize: 24,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
-                          const Spacer(),
-                          if (reminder.isComplete)
-                            const Icon(Icons.check, color: Colors.white)
-                        ],
-                      ),
-                      if (!reminder.isComplete)
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              side: const BorderSide(
-                                  color: Colors.white, width: 1.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            onPressed: () {
-                              _addAccount(reminder);
-                            },
-                            child: const Text(
-                              'Mark as Completed',
-                              style: TextStyle(color: Colors.white),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Reminder set for date: ${reminder.date.day}/${reminder.date.month}/${reminder.date.year}',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[300],
                             ),
                           ),
-                        ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit, color: Colors.white),
-                        onPressed: () async {
-                          Reminder? reminderResult = await showDialog<Reminder>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return EditReminderDialog(title: reminder.title, amount: reminder.amount, date: reminder.date,isComplete: reminder.isComplete, category: reminder.category);
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Text(
+                                '\$${reminder.amount}',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const Spacer(),
+                              if (reminder.isComplete)
+                                const Icon(Icons.check, color: Colors.white)
+                            ],
+                          ),
+                          if (!reminder.isComplete)
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                      color: Colors.white, width: 1.0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  _addAccount(reminder);
+                                },
+                                child: const Text(
+                                  'Mark as Completed',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit, color: Colors.white),
+                            onPressed: () async {
+                              Reminder? reminderResult =
+                                  await showDialog<Reminder>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return EditReminderDialog(
+                                      title: reminder.title,
+                                      amount: reminder.amount,
+                                      date: reminder.date,
+                                      isComplete: reminder.isComplete,
+                                      category: reminder.category);
+                                },
+                              );
+                              if (reminderResult != null) {
+                                reminderResult.id = reminder.id;
+                                _editReminder(reminderResult);
+                              }
                             },
-                          );
-                          if(reminderResult!=null){
-                            reminderResult.id = reminder.id;
-                            _editReminder(reminderResult);
-                          }
-                        },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.delete, color: Colors.white),
+                            onPressed: () {
+                              _deleteReminder(reminder);
+                            },
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.white),
-                        onPressed: () {
-                          _deleteReminder(reminder);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ]));
-        },
+                    ),
+                  ]));
+            },
+          ))
+        ],
       ),
     );
   }

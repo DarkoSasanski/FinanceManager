@@ -30,16 +30,15 @@ class ReminderRepository {
     );
 
     Category category =
-    await categoryRepository.findById(maps[0]['category_id']);
+        await categoryRepository.findById(maps[0]['category_id']);
 
     return Reminder.withId(
-      id: maps[0]['id'],
-      title: maps[0]['title'],
-      amount: maps[0]['amount'],
-      date: DateTime.parse(maps[0]['date']),
-      isComplete: maps[0]['isComplete'],
-      category: category
-    );
+        id: maps[0]['id'],
+        title: maps[0]['title'],
+        amount: maps[0]['amount'],
+        date: DateTime.parse(maps[0]['date']),
+        isComplete: maps[0]['isComplete'],
+        category: category);
   }
 
   Future<List<Reminder>> findAll() async {
@@ -47,17 +46,16 @@ class ReminderRepository {
 
     List<Reminder> reminders = [];
     for (int i = 0; i < maps.length; i++) {
-              Category category =
-              await categoryRepository.findById(maps[i]['category_id']);
+      Category category =
+          await categoryRepository.findById(maps[i]['category_id']);
 
-              reminders.add(Reminder.withId(
-                id: maps[i]['id'],
-                title: maps[i]['title'],
-                amount: maps[i]['amount'],
-                date: DateTime.parse(maps[i]['date']),
-                isComplete: maps[i]['isComplete']==1 ? true : false,
-                category: category)
-          );
+      reminders.add(Reminder.withId(
+          id: maps[i]['id'],
+          title: maps[i]['title'],
+          amount: maps[i]['amount'],
+          date: DateTime.parse(maps[i]['date']),
+          isComplete: maps[i]['isComplete'] == 1 ? true : false,
+          category: category));
     }
     return reminders;
   }
@@ -70,6 +68,7 @@ class ReminderRepository {
       whereArgs: [reminder.id],
     );
   }
+
   Future<void> setAccount(Account account, int id) async {
     await _db.update(
       'Reminder',
@@ -85,5 +84,33 @@ class ReminderRepository {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<List<Reminder>> findByFilter(
+      String status, DateTime from, DateTime to) async {
+    String statusArg = status == 'All' ? '' : 'and isComplete = ?';
+    List<Object> whereArgs = status == 'All'
+        ? [from.toString(), to.toString()]
+        : [from.toString(), to.toString(), status == 'Completed' ? 1 : 0];
+
+    final List<Map<String, dynamic>> maps = await _db.query('Reminder',
+        where: 'date >= ? and date <= ? $statusArg', whereArgs: whereArgs);
+
+    List<Reminder> reminders = [];
+
+    for (int i = 0; i < maps.length; i++) {
+      Category category =
+          await categoryRepository.findById(maps[i]['category_id']);
+
+      reminders.add(Reminder.withId(
+          id: maps[i]['id'],
+          title: maps[i]['title'],
+          amount: maps[i]['amount'],
+          date: DateTime.parse(maps[i]['date']),
+          isComplete: maps[i]['isComplete'] == 1 ? true : false,
+          category: category));
+    }
+
+    return reminders;
   }
 }
