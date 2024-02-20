@@ -82,6 +82,7 @@ class IncomeRepository {
       whereArgs: [id],
     );
   }
+
   Future<void> markAsReceived(int id) async {
     await _db.update(
       'Income',
@@ -89,5 +90,39 @@ class IncomeRepository {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<List<Income>> findByFilter(
+      String status, int? selectedAccount, DateTime from, DateTime to) async {
+    String args = 'date >= ? and date <= ?';
+    List<Object> whereArgs = [from.toString(), to.toString()];
+
+    if (status != 'All') {
+      args += ' and isReceived = ?';
+      whereArgs.add(status == 'Received' ? 1 : 0);
+    }
+
+    if (selectedAccount != null) {
+      args += ' and account_id = ?';
+      whereArgs.add(selectedAccount);
+    }
+
+    final List<Map<String, dynamic>> maps =
+        await _db.query('Income', where: args, whereArgs: whereArgs);
+
+    List<Income> incomes = [];
+    for (var map in maps) {
+      Account account = await accountRepository.findById(map['account_id']);
+      incomes.add(Income.withId(
+        id: map['id'],
+        description: map['description'],
+        amount: map['amount'],
+        date: DateTime.parse(map['date']),
+        account: account,
+        source: map['source'],
+        isReceived: map['isReceived'] == 1,
+      ));
+    }
+    return incomes;
   }
 }

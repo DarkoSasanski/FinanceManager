@@ -35,7 +35,7 @@ class _AddAccountAppBarButtonState extends State<AddAccountAppBarButton> {
               }
 
               if (accountAmount <= 0) {
-                accountAmountError = 'This field is required';
+                accountAmountError = 'Amount must be greater than 0';
                 isValid = false;
               } else {
                 accountAmountError = null;
