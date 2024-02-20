@@ -133,70 +133,72 @@ class _CurrenciesState extends State<Currencies> {
             currencyConversionRepository: _currencyConversionRepository),
       ),
       drawer: const SideMenu(),
-      body: Center(
-        child: _currencyConversionResult == null
-            ? const CircularProgressIndicator(
-                color: Colors.grey, // Adjust the color to match your theme
-              )
-            : Column(
-                children: <Widget>[
-                  Row(
+      body: _currencyConversionResult == null
+          ? const Center(
+              child: CircularProgressIndicator(color: Colors.grey,),
+            )
+          : Column(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(16, 19, 37, 1),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
+                      DropdownButton<String>(
                         padding: const EdgeInsets.only(left: 16),
-                        child: DropdownButton<String>(
-                          value: _selectedCurrency,
-                          items: getCurrencies()
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(value),
-                            );
-                          }).toList(),
-                          onChanged: (String? value) {
-                            setState(() {
-                              _currencyConversionResult = null;
-                              _selectedCurrency = value!;
-                            });
-                            _loadCurrencies();
-                          },
-                        ),
+                        value: _selectedCurrency,
+                        items: getCurrencies()
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? value) {
+                          setState(() {
+                            _currencyConversionResult = null;
+                            _selectedCurrency = value!;
+                          });
+                          _loadCurrencies();
+                        },
                       ),
                     ],
                   ),
-                  Expanded(
-                    child: ListView.separated(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: _currencyConversionResult!.rates.length,
-                      separatorBuilder: (context, index) => const Divider(
-                        color: Colors.grey,
-                      ),
-                      itemBuilder: (context, index) {
-                        final rate = _currencyConversionResult!.rates[index];
-                        return ListTile(
-                          tileColor: Colors.teal,
-                          contentPadding: const EdgeInsets.all(8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          title: Text(
-                            rate.code,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Text(
-                            rate.rate.toString(),
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                        );
-                      },
+                ),
+                Expanded(
+                  child: ListView.separated(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: _currencyConversionResult!.rates.length,
+                    separatorBuilder: (context, index) => const Divider(
+                      color: Colors.grey,
                     ),
+                    itemBuilder: (context, index) {
+                      final rate = _currencyConversionResult!.rates[index];
+                      return ListTile(
+                        tileColor: Colors.teal,
+                        contentPadding: const EdgeInsets.all(8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        title: Text(
+                          rate.code,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        subtitle: Text(
+                          rate.rate.toString(),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      );
+                    },
                   ),
-                ],
-              ),
-      ),
+                ),
+              ],
+            ),
     );
   }
 }

@@ -102,8 +102,6 @@ class _MakeAConversionAppBarButtonState
                             const SizedBox(height: 20),
                             DropdownButtonFormField<String>(
                               value: fromCurrency,
-                              icon: const Icon(Icons.arrow_downward,
-                                  color: Colors.white),
                               iconSize: 24,
                               elevation: 16,
                               decoration: _inputDecoration('From'),
@@ -130,8 +128,6 @@ class _MakeAConversionAppBarButtonState
                             const SizedBox(height: 20),
                             DropdownButtonFormField<String>(
                               value: toCurrency,
-                              icon: const Icon(Icons.arrow_downward,
-                                  color: Colors.white),
                               iconSize: 24,
                               elevation: 16,
                               decoration: _inputDecoration('To'),
