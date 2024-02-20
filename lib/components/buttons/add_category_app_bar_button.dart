@@ -34,7 +34,8 @@ class _AddCategoryAppBarButtonState extends State<AddCategoryAppBarButton> {
           content: SingleChildScrollView(
             child: ColorPicker(
               pickerColor: currentColor,
-              onColorChanged: (color) => setDialogState(() => currentColor = color),
+              onColorChanged: (color) =>
+                  setDialogState(() => currentColor = color),
               showLabel: false,
               pickerAreaHeightPercent: 0.8,
             ),
@@ -57,7 +58,7 @@ class _AddCategoryAppBarButtonState extends State<AddCategoryAppBarButton> {
     String categoryName = '';
     currentColor = Colors.blue;
     currentIcon = Icons.home;
-
+    String? categoryNameError;
 
     showDialog(
       context: context,
@@ -83,7 +84,12 @@ class _AddCategoryAppBarButtonState extends State<AddCategoryAppBarButton> {
                     ),
                     const SizedBox(height: 20),
                     TextField(
-                      onChanged: (value) => categoryName = value,
+                      onChanged: (value) {
+                        categoryName = value;
+                        if (categoryNameError != null && value.isNotEmpty) {
+                          setDialogState(() => categoryNameError = null);
+                        }
+                      },
                       style: const TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         labelText: 'Name',
@@ -94,6 +100,7 @@ class _AddCategoryAppBarButtonState extends State<AddCategoryAppBarButton> {
                         focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.tealAccent),
                         ),
+                        errorText: categoryNameError,
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -173,7 +180,10 @@ class _AddCategoryAppBarButtonState extends State<AddCategoryAppBarButton> {
                         ),
                         TextButton(
                           onPressed: () {
-                            if (categoryName.isNotEmpty) {
+                            if (categoryName.isEmpty) {
+                              setDialogState(() =>
+                                  categoryNameError = 'This field is required');
+                            } else {
                               widget.onSubmitted(
                                   categoryName, currentColor, currentIcon);
                               Navigator.of(context).pop();

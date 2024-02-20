@@ -27,9 +27,11 @@ class _AddIncomeAppBarButtonState extends State<AddIncomeAppBarButton> {
     bool isReceived = true;
     selectedDate = DateTime.now();
     Account? selectedAccount;
+    String? sourceError;
+    String? amountError;
+
     final DatabaseHelper _databaseHelper = DatabaseHelper();
     final accountRepository = await _databaseHelper.accountRepository();
-
     List<Account> availableAccounts = await accountRepository.findAll();
 
     if (availableAccounts.isNotEmpty) {
@@ -47,31 +49,33 @@ class _AddIncomeAppBarButtonState extends State<AddIncomeAppBarButton> {
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: StatefulBuilder(
-                builder: (context, setDialogState) {
+                builder: (context, StateSetter setDialogState) {
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Text(
                         'Add Income',
                         style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            fontSize: 24,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        onChanged: (value) => source = value,
+                        onChanged: (value) {
+                          source = value;
+                          sourceError = null;
+                          setDialogState(() {});
+                        },
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           labelText: 'Source',
                           labelStyle: TextStyle(color: Colors.grey[350]),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey[350]!),
-                          ),
+                              borderSide: BorderSide(color: Colors.grey[350]!)),
                           focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.tealAccent),
-                          ),
+                              borderSide: BorderSide(color: Colors.tealAccent)),
+                          errorText: sourceError,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -97,11 +101,10 @@ class _AddIncomeAppBarButtonState extends State<AddIncomeAppBarButton> {
                           labelText: 'Amount',
                           labelStyle: TextStyle(color: Colors.grey[350]),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey[350]!),
-                          ),
+                              borderSide: BorderSide(color: Colors.grey[350]!)),
                           focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.tealAccent),
-                          ),
+                              borderSide: BorderSide(color: Colors.tealAccent)),
+                          errorText: amountError,
                         ),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
@@ -194,25 +197,30 @@ class _AddIncomeAppBarButtonState extends State<AddIncomeAppBarButton> {
                           TextButton(
                             child: const Text('Cancel',
                                 style: TextStyle(color: Colors.white)),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
+                            onPressed: () => Navigator.of(context).pop(),
                           ),
                           TextButton(
-                              onPressed: () {
-                                if (source.isNotEmpty && amount > 0) {
-                                  widget.onSubmitted(
-                                      source,
-                                      description,
-                                      amount,
-                                      isReceived,
-                                      selectedDate,
-                                      selectedAccount);
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                              child: const Text('Add',
-                                  style: TextStyle(color: Colors.tealAccent))),
+                            onPressed: () {
+                              bool isValid = true;
+                              if (source.isEmpty) {
+                                sourceError = 'Source is required';
+                                isValid = false;
+                              }
+                              if (amount <= 0) {
+                                amountError = 'Amount must be greater than 0';
+                                isValid = false;
+                              }
+                              if (isValid) {
+                                widget.onSubmitted(source, description, amount,
+                                    isReceived, selectedDate, selectedAccount);
+                                Navigator.of(context).pop();
+                              } else {
+                                setDialogState(() {});
+                              }
+                            },
+                            child: const Text('Add',
+                                style: TextStyle(color: Colors.tealAccent)),
+                          ),
                         ],
                       ),
                     ],
@@ -226,7 +234,8 @@ class _AddIncomeAppBarButtonState extends State<AddIncomeAppBarButton> {
     );
   }
 
-  Future<void> _selectDate(BuildContext context, Function setDialogState) async {
+  Future<void> _selectDate(
+      BuildContext context, Function setDialogState) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: selectedDate,

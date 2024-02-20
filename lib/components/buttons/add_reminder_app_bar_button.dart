@@ -25,6 +25,8 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
   Future<void> _showAddReminderDialog() async {
     String title = '';
     int amount = 0;
+    String? titleError;
+    String? amountError;
     Category? selectedCategory;
     final categoryRepository = await _databaseHelper.categoryRepository();
     List<Category> availableCategories = await categoryRepository.findAll();
@@ -46,7 +48,7 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: StatefulBuilder(
-                builder: (context, setDialogState) {
+                builder: (context, StateSetter setDialogState) {
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -60,70 +62,47 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        onChanged: (value) => title = value,
+                        onChanged: (value) {
+                          title = value;
+                          if (value.isNotEmpty) {
+                            titleError = null;
+                          }
+                          setDialogState(() {});
+                        },
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           labelText: 'Title',
                           labelStyle: TextStyle(color: Colors.grey[350]),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey[350]!),
-                          ),
+                              borderSide: BorderSide(color: Colors.grey[350]!)),
                           focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.tealAccent),
-                          ),
+                              borderSide: BorderSide(color: Colors.tealAccent)),
+                          errorText: titleError,
                         ),
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        onChanged: (value) => amount = int.tryParse(value) ?? 0,
+                        onChanged: (value) {
+                          amount = int.tryParse(value) ?? 0;
+                          if (amount > 0) {
+                            amountError = null;
+                          }
+                          setDialogState(() {});
+                        },
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           labelText: 'Amount',
                           labelStyle: TextStyle(color: Colors.grey[350]),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey[350]!),
-                          ),
+                              borderSide: BorderSide(color: Colors.grey[350]!)),
                           focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.tealAccent),
-                          ),
+                              borderSide: BorderSide(color: Colors.tealAccent)),
+                          errorText: amountError,
                         ),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
                         ],
-                      ),
-                      const SizedBox(height: 20),
-                      DropdownButtonFormField<Category>(
-                        decoration: InputDecoration(
-                          labelText: 'Category',
-                          labelStyle: TextStyle(color: Colors.grey[350]),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey[350]!),
-                          ),
-                        ),
-                        dropdownColor: const Color.fromRGBO(29, 31, 52, 1),
-                        value: selectedCategory,
-                        icon: const Icon(Icons.arrow_drop_down,
-                            color: Colors.grey),
-                        items: availableCategories
-                            .map<DropdownMenuItem<Category>>(
-                                (Category category) {
-                          return DropdownMenuItem<Category>(
-                            value: category,
-                            child: Text(
-                              category.name,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (Category? newValue) {
-                          setDialogState(() {
-                            selectedCategory = newValue!;
-                          });
-                        },
                       ),
                       const SizedBox(height: 20),
                       ListTile(
@@ -147,20 +126,30 @@ class _AddReminderAppBarButtonState extends State<AddReminderAppBarButton> {
                           TextButton(
                             child: const Text('Cancel',
                                 style: TextStyle(color: Colors.white)),
-                            onPressed: () {
-                              Navigator.of(context).pop(null);
-                            },
+                            onPressed: () => Navigator.of(context).pop(),
                           ),
                           TextButton(
-                              onPressed: () {
-                                if (title.isNotEmpty && amount > 0) {
-                                  widget.onSubmitted(title, amount,
-                                      selectedDate, false, selectedCategory);
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                              child: const Text('Add',
-                                  style: TextStyle(color: Colors.tealAccent))),
+                            onPressed: () {
+                              bool isValid = true;
+                              if (title.isEmpty) {
+                                isValid = false;
+                                titleError = 'Title is required';
+                              }
+                              if (amount <= 0) {
+                                isValid = false;
+                                amountError = 'Amount must be greater than 0';
+                              }
+                              if (isValid) {
+                                widget.onSubmitted(title, amount, selectedDate,
+                                    false, selectedCategory);
+                                Navigator.of(context).pop();
+                              } else {
+                                setDialogState(() {});
+                              }
+                            },
+                            child: const Text('Add',
+                                style: TextStyle(color: Colors.tealAccent)),
+                          ),
                         ],
                       ),
                     ],

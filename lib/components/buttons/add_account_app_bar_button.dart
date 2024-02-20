@@ -17,12 +17,33 @@ class _AddAccountAppBarButtonState extends State<AddAccountAppBarButton> {
   void _showAddAccountDialog() {
     String accountName = '';
     int accountAmount = 0;
+    String? accountNameError;
+    String? accountAmountError;
 
     showDialog(
       context: context,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
+            bool validateInputs() {
+              bool isValid = true;
+              if (accountName.isEmpty) {
+                accountNameError = 'This field is required';
+                isValid = false;
+              } else {
+                accountNameError = null;
+              }
+
+              if (accountAmount <= 0) {
+                accountAmountError = 'This field is required';
+                isValid = false;
+              } else {
+                accountAmountError = null;
+              }
+
+              return isValid;
+            }
+
             return Dialog(
               backgroundColor: const Color.fromRGBO(29, 31, 52, 1),
               shape: RoundedRectangleBorder(
@@ -52,6 +73,7 @@ class _AddAccountAppBarButtonState extends State<AddAccountAppBarButton> {
                         focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.tealAccent),
                         ),
+                        errorText: accountNameError,
                       ),
                       onChanged: (value) {
                         setState(() {
@@ -71,6 +93,7 @@ class _AddAccountAppBarButtonState extends State<AddAccountAppBarButton> {
                         focusedBorder: const UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.tealAccent),
                         ),
+                        errorText: accountAmountError,
                       ),
                       keyboardType: TextInputType.number,
                       onChanged: (value) {
@@ -92,13 +115,15 @@ class _AddAccountAppBarButtonState extends State<AddAccountAppBarButton> {
                         ),
                         const SizedBox(width: 8),
                         TextButton(
-                          onPressed: accountName.isNotEmpty && accountAmount > 0
-                              ? () {
-                                  widget.onSubmitted(
-                                      accountName, accountAmount);
-                                  Navigator.of(context).pop();
-                                }
-                              : null,
+                          onPressed: () {
+                            if (validateInputs()) {
+                              setState(() {});
+                              widget.onSubmitted(accountName, accountAmount);
+                              Navigator.of(context).pop();
+                            } else {
+                              setState(() {});
+                            }
+                          },
                           child: const Text('Add',
                               style: TextStyle(color: Colors.tealAccent)),
                         ),

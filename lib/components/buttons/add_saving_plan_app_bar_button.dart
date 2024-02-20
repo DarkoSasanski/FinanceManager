@@ -21,6 +21,8 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
   void _showAddSavingPlanDialog() {
     String type = '';
     int goalAmount = 0;
+    String? typeError;
+    String? goalAmountError;
 
     startDate = DateTime.now();
     endDate = DateTime.now();
@@ -36,7 +38,7 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: StatefulBuilder(
-                builder: (context, setDialogState) {
+                builder: (context, StateSetter setDialogState) {
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -50,33 +52,42 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        onChanged: (value) => type = value,
+                        onChanged: (value) {
+                          type = value;
+                          if (type.isNotEmpty) {
+                            typeError = null;
+                          }
+                          setDialogState(() {});
+                        },
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           labelText: 'Type',
                           labelStyle: TextStyle(color: Colors.grey[350]),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey[350]!),
-                          ),
+                              borderSide: BorderSide(color: Colors.grey[350]!)),
                           focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.tealAccent),
-                          ),
+                              borderSide: BorderSide(color: Colors.tealAccent)),
+                          errorText: typeError,
                         ),
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        onChanged: (value) =>
-                            goalAmount = int.tryParse(value) ?? 0,
+                        onChanged: (value) {
+                          goalAmount = int.tryParse(value) ?? 0;
+                          if (goalAmount > 0) {
+                            goalAmountError = null;
+                          }
+                          setDialogState(() {});
+                        },
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                           labelText: 'Goal Amount',
                           labelStyle: TextStyle(color: Colors.grey[350]),
                           enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey[350]!),
-                          ),
+                              borderSide: BorderSide(color: Colors.grey[350]!)),
                           focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.tealAccent),
-                          ),
+                              borderSide: BorderSide(color: Colors.tealAccent)),
+                          errorText: goalAmountError,
                         ),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
@@ -121,20 +132,29 @@ class _AddSavingPlanAppBarButtonState extends State<AddSavingPlanAppBarButton> {
                           TextButton(
                             child: const Text('Cancel',
                                 style: TextStyle(color: Colors.white)),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
+                            onPressed: () => Navigator.of(context).pop(),
                           ),
                           TextButton(
-                              onPressed: () {
-                                if (type.isNotEmpty && goalAmount > 0) {
-                                  widget.onSubmitted(
-                                      type, goalAmount, startDate, endDate);
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                              child: const Text('Add',
-                                  style: TextStyle(color: Colors.tealAccent))),
+                            onPressed: () {
+                              if (type.isEmpty) {
+                                typeError = 'Type is required';
+                                setDialogState(() {});
+                              }
+                              if (goalAmount <= 0) {
+                                goalAmountError =
+                                    'Goal Amount must be greater than 0';
+                                setDialogState(() {});
+                              }
+                              if (typeError == null &&
+                                  goalAmountError == null) {
+                                widget.onSubmitted(
+                                    type, goalAmount, startDate, endDate);
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            child: const Text('Add',
+                                style: TextStyle(color: Colors.tealAccent)),
+                          ),
                         ],
                       ),
                     ],

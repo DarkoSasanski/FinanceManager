@@ -12,7 +12,8 @@ class AddExpenseAppBarButton extends StatefulWidget {
   final String actionButtonText;
 
   const AddExpenseAppBarButton(
-      {super.key, required this.onSubmitted, required this.actionButtonText});
+      {Key? key, required this.onSubmitted, required this.actionButtonText})
+      : super(key: key);
 
   @override
   State<AddExpenseAppBarButton> createState() => _AddExpenseAppBarButtonState();
@@ -22,15 +23,17 @@ class _AddExpenseAppBarButtonState extends State<AddExpenseAppBarButton> {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
   DateTime selectedDate = DateTime.now();
   Category? selectedCategory;
+  Account? selectedAccount;
   String description = '';
   int amount = 0;
-  Account? selectedAccount;
+  String? descriptionError;
+  String? amountError;
 
   Future<void> _showAddExpenseDialog() async {
     final categoryRepository = await _databaseHelper.categoryRepository();
     final accountRepository = await _databaseHelper.accountRepository();
     List<Category> availableCategories = await categoryRepository.findAll();
-    List<Account> availableAccounts =  await accountRepository.findAll();
+    List<Account> availableAccounts = await accountRepository.findAll();
     if (availableAccounts.isNotEmpty) {
       selectedAccount = availableAccounts[0];
     }
@@ -40,6 +43,8 @@ class _AddExpenseAppBarButtonState extends State<AddExpenseAppBarButton> {
     }
 
     selectedDate = DateTime.now();
+    description = '';
+    amount = 0;
 
     showDialog(
       context: context,
@@ -59,22 +64,38 @@ class _AddExpenseAppBarButtonState extends State<AddExpenseAppBarButton> {
                       const Text(
                         'Add Expense',
                         style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        onChanged: (value) {
+                          description = value;
+                          if (description.isNotEmpty &&
+                              descriptionError != null) {
+                            descriptionError = null;
+                            setDialogState(() {});
+                          }
+                        },
+                        style: const TextStyle(color: Colors.white),
+                        decoration: _inputDecoration('Description').copyWith(
+                          errorText: descriptionError,
                         ),
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        onChanged: (value) => description = value,
+                        onChanged: (value) {
+                          amount = int.tryParse(value) ?? 0;
+                          if (amount > 0 && amountError != null) {
+                            amountError = null;
+                            setDialogState(() {});
+                          }
+                        },
                         style: const TextStyle(color: Colors.white),
-                        decoration: _inputDecoration('Description'),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        onChanged: (value) => amount = int.tryParse(value) ?? 0,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: _inputDecoration('Amount'),
+                        decoration: _inputDecoration('Amount').copyWith(
+                          errorText: amountError,
+                        ),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly
@@ -180,39 +201,52 @@ class _AddExpenseAppBarButtonState extends State<AddExpenseAppBarButton> {
   }
 
   Widget _actionButtons(BuildContext context, StateSetter setDialogState) {
-    return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-      TextButton(
-        child: const Text('Cancel', style: TextStyle(color: Colors.white)),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
-      TextButton(
-        onPressed: () {
-          if (description.isNotEmpty &&
-              amount > 0 &&
-              selectedCategory != null &&
-              selectedAccount != null) {
-            widget.onSubmitted(description, amount, selectedDate,
-                selectedAccount!, selectedCategory!);
-            description = '';
-            amount = 0;
-            selectedAccount = null;
-            Navigator.of(context).pop();
-          }
-        },
-        child: const Text('Add', style: TextStyle(color: Colors.tealAccent)),
-      ),
-    ]);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton(
+          child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        TextButton(
+          onPressed: () {
+            bool isValid = true;
+            if (description.isEmpty) {
+              isValid = false;
+              descriptionError = 'Description is required';
+            } else {
+              descriptionError = null;
+            }
+            if (amount <= 0) {
+              isValid = false;
+              amountError = 'Amount must be greater than 0';
+            } else {
+              amountError = null;
+            }
+            if (isValid) {
+              widget.onSubmitted(description, amount, selectedDate,
+                  selectedAccount!, selectedCategory!);
+              Navigator.of(context).pop();
+            } else {
+              setDialogState(() {});
+            }
+          },
+          child: const Text('Add', style: TextStyle(color: Colors.tealAccent)),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomActionButton(
-        actionButtonText: widget.actionButtonText,
-        actionButtonOnPressed: _showAddExpenseDialog,
-        gradientColors: const [
-          Color(0xFF00B686),
-          Color(0xFF008A60),
-          Color(0xff00573a),
-        ]);
+      actionButtonText: widget.actionButtonText,
+      actionButtonOnPressed: _showAddExpenseDialog,
+      gradientColors: const [
+        Color(0xFF00B686),
+        Color(0xFF008A60),
+        Color(0xff00573a),
+      ],
+    );
   }
 }
