@@ -64,6 +64,7 @@ class ExpenseRepository {
 
     return expenses;
   }
+
   Future<void> updateExpense(Expense expense) async {
     await _db.update(
       'Expense',
@@ -72,11 +73,51 @@ class ExpenseRepository {
       whereArgs: [expense.id],
     );
   }
+
   Future<void> deleteExpense(int id) async {
     await _db.delete(
       'Expense',
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<List<Expense>> findByFilter(int? selectedCategory,
+      int? selectedAccount, DateTime from, DateTime to) async {
+    String args = 'date >= ? and date <= ?';
+    List<Object> whereArgs = [from.toString(), to.toString()];
+
+    if (selectedCategory != null) {
+      args += ' and category_id = ?';
+      whereArgs.add(selectedCategory);
+    }
+
+    if (selectedAccount != null) {
+      args += ' and account_id = ?';
+      whereArgs.add(selectedAccount);
+    }
+
+    final List<Map<String, dynamic>> maps =
+        await _db.query('Expense', where: args, whereArgs: whereArgs);
+
+    List<Expense> expenses = [];
+
+    for (var map in maps) {
+      Account account = await accountRepository.findById(map['account_id']);
+      Category category = await categoryRepository.findById(map['category_id']);
+
+      Expense expense = Expense.withId(
+        id: map['id'],
+        description: map['description'],
+        amount: map['amount'],
+        date: DateTime.parse(map['date']),
+        account: account,
+        category: category,
+      );
+
+      expenses.add(expense);
+    }
+
+    return expenses;
   }
 }

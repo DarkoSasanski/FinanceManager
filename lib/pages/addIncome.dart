@@ -195,6 +195,7 @@ class _IncomesPageState extends State<IncomesPage> {
           ],
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
                 child: ListTile(
