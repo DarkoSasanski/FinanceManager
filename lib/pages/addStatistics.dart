@@ -63,7 +63,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
-        fontWeight: FontWeight.bold, fontSize: 8, color: Colors.white);
+        fontWeight: FontWeight.bold, fontSize: 10, color: Colors.white);
 
     int year = value ~/ 100;
     int month = (value % 100).toInt();
@@ -119,7 +119,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
-        fontWeight: FontWeight.bold, fontSize: 8, color: Colors.white);
+        fontWeight: FontWeight.bold, fontSize: 10, color: Colors.white);
 
     String text = '\$$value';
     return SideTitleWidget(
@@ -161,14 +161,14 @@ class _StatisticsPageState extends State<StatisticsPage> {
         drawVerticalLine: true,
         getDrawingHorizontalLine: (value) {
           return FlLine(
-            color: Colors.deepPurple,
-            strokeWidth: 1,
+            color: Colors.deepPurple.withOpacity(0.5),
+            strokeWidth: 0.5,
           );
         },
         getDrawingVerticalLine: (value) {
           return FlLine(
-            color: Colors.deepPurpleAccent,
-            strokeWidth: 1,
+            color: Colors.deepPurpleAccent.withOpacity(0.5),
+            strokeWidth: 0.5,
           );
         },
       ),
@@ -185,20 +185,20 @@ class _StatisticsPageState extends State<StatisticsPage> {
             showTitles: true,
             reservedSize: 30,
             interval: 1,
-            getTitlesWidget: bottomTitleWidgets,
+            getTitlesWidget: (value, meta) => bottomTitleWidgets(value, meta),
           ),
         ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            getTitlesWidget: leftTitleWidgets,
+            getTitlesWidget: (value, meta) => leftTitleWidgets(value, meta),
             reservedSize: 42,
           ),
         ),
       ),
       borderData: FlBorderData(
         show: true,
-        border: Border.all(color: const Color(0xff37434d)),
+        border: Border.all(color: const Color(0xff37434d), width: 2),
       ),
       minX: mappingHelp.keys
           .reduce((min, key) => key < min ? key : min)
@@ -216,6 +216,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
           isCurved: true,
           gradient: LinearGradient(
             colors: gradientColors,
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
           ),
           barWidth: 5,
           isStrokeCapRound: true,
@@ -228,6 +230,8 @@ class _StatisticsPageState extends State<StatisticsPage> {
               colors: gradientColors
                   .map((color) => color.withOpacity(0.3))
                   .toList(),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
           ),
         ),
@@ -241,7 +245,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
       appBar: const CustomAppBar(
         title: "Statistics",
       ),
-      drawer: const SideMenu(), // Drawer, Body, etc.
+      drawer: const SideMenu(),
       body: _buildChart(),
     );
   }
