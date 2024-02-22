@@ -21,3 +21,4 @@ Finance Manager will enable users to keep precise and detailed records of their 
 ## Installation
 * Requirements:
   * Flutter installed
+  * Android emulator installed
