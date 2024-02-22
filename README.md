@@ -28,3 +28,8 @@ We used the Frankfurter API, which is an open-source API for current and histori
 * Requirements:
   * Flutter installed
   * Android emulator installed
+
+## Made by
+* Darko Sasanski - 201065
+* Bojan Trpeski - 201091
+* Denica Kjorvezir - 201094
