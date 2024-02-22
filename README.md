@@ -21,6 +21,9 @@ Finance Manager will enable users to keep precise and detailed records of their 
 * Repository: We have implemented a repository pattern for the database. This pattern is used to separate the logic that retrieves the data and the business logic that acts on the data. This way, the business logic can be tested independently from the database.
 * Component-based architecture: We have implemented a component-based architecture for the UI. This way, we can reuse the components and the code is more readable and maintainable.
 
+## Web services
+We used the Frankfurter API, which is an open-source API for current and historical foreign exchange rates published by the European Central Bank.
+
 ## Installation
 * Requirements:
   * Flutter installed
