@@ -1,16 +1,19 @@
-# financemanager
+# Finance Manager
 
-A new Flutter project.
+Finance Manager will enable users to keep precise and detailed records of their financial transactions by simply adding new entries for each expense or income. With its intuitive approach, the application will greatly simplify the task of tracking expenses and income.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+* Biometrical authentication
+* Notifications
+* Persisting data in sqlite DB
+* Models and repositories
+* Displaying charts
+* Displaying custom UI elements
+* Money converter
+* Filters
+* Reminders
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Installation
+* Requirements:
+  * Flutter installed
